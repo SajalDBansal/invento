@@ -11,3 +11,328 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  DEFAULT
+  ADMIN
+  STAFF
+  ACCOUNTANT
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+//////////////////////
+// AUTH & USER RBAC //
+//////////////////////
+
+model User {
+  id            String        @id @default(cuid())
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?     @map("email_verified")
+  image         String?
+  passwordHash  String?
+  isActive      Boolean       @default(true)
+  roleId        String
+  role          Role          @relation(fields: [roleId], references: [id])
+  accounts      Account[]
+  sessions      Session[]
+  userSessions  UserSession[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  users           User[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model UserSession {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  token      String   @unique
+  ip         String?
+  deviceName String?
+  userAgent  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+}
+
+//////////////////////
+// CATEGORY SYSTEM  //
+//////////////////////
+
+model Category {
+  id            String     @id @default(uuid())
+  name          String
+  parentId      String?
+  parent        Category?  @relation("CategoryToSub", fields: [parentId], references: [id])
+  subCategories Category[] @relation("CategoryToSub")
+
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+//////////////////////
+// UNIT MANAGEMENT  //
+//////////////////////
+
+model Unit {
+  id        String @id @default(uuid())
+  name      String // e.g. kg, piece, liter
+  shortName String // e.g. kg, pc, L
+
+  products Product[]
+}
+
+//////////////////////
+// PRODUCT SYSTEM   //
+//////////////////////
+
+model Product {
+  id          String  @id @default(uuid())
+  name        String
+  sku         String  @unique
+  description String?
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id])
+
+  costPrice        Float
+  sellingPrice     Float
+  lastSellingPrice Float
+
+  inventory             Inventory?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  inventoryTransactions InventoryTransaction[]
+  saleItems             SaleItem[]
+  purchaseItems         PurchaseItem[]
+
+  @@index([categoryId])
+  @@index([name])
+}
+
+//////////////////////
+// INVENTORY CORE   //
+//////////////////////
+
+model Inventory {
+  id        String  @id @default(uuid())
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity Float @default(0)
+  minStock Float @default(0)
+
+  transactions InventoryTransaction[]
+  updatedAt    DateTime               @updatedAt
+
+  @@index([quantity]) // low stock queries
+}
+
+model InventoryTransaction {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  type      TransactionType
+  quantity  Float
+  unitPrice Float?
+
+  referenceId String? // orderId / purchaseId
+  note        String?
+
+  createdAt   DateTime   @default(now())
+  inventory   Inventory? @relation(fields: [inventoryId], references: [id])
+  inventoryId String?
+
+  @@index([productId, createdAt])
+  @@index([type])
+}
+
+enum TransactionType {
+  PURCHASE
+  SALE
+  ADJUSTMENT
+  RETURN
+}
+
+//////////////////////
+// BUSINESS PARTIES //
+//////////////////////
+
+model Party {
+  id        String  @id @default(uuid())
+  name      String
+  phone     String?
+  ownerName String?
+  email     String?
+  address   String?
+  GSTN      String?
+
+  type PartyType
+
+  ledger    LedgerEntry[]
+  createdAt DateTime      @default(now())
+  sales     Sale[]
+  purchases Purchase[]
+}
+
+enum PartyType {
+  CUSTOMER
+  SUPPLIER
+  CARPENTER
+}
+
+//////////////////////
+// LEDGER SYSTEM    //
+//////////////////////
+
+model LedgerEntry {
+  id String @id @default(uuid())
+
+  partyId String
+  party   Party  @relation(fields: [partyId], references: [id])
+
+  amount Float
+  type   LedgerType
+
+  reference String? // invoiceId etc
+  note      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([partyId, createdAt])
+  @@index([type])
+  @@index([partyId])
+}
+
+enum LedgerType {
+  CREDIT // you owe supplier
+  DEBIT // customer owes you
+  PAYMENT // settlement
+  DISCOUNT //discount to the customer
+}
+
+//////////////////////
+// SALES & PURCHASE //
+//////////////////////
+
+model Sale {
+  id      String  @id @default(uuid())
+  partyId String?
+  party   Party?  @relation(fields: [partyId], references: [id])
+
+  totalAmount Float
+  paidAmount  Float
+
+  items     SaleItem[]
+  createdAt DateTime   @default(now())
+
+  @@index([createdAt])
+}
+
+model SaleItem {
+  id     String @id @default(uuid())
+  saleId String
+  sale   Sale   @relation(fields: [saleId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity Float
+  price    Float
+}
+
+model Purchase {
+  id         String @id @default(uuid())
+  supplierId String
+  supplier   Party  @relation(fields: [supplierId], references: [id])
+
+  totalAmount Float
+
+  items     PurchaseItem[]
+  createdAt DateTime       @default(now())
+
+  @@index([createdAt])
+}
+
+model PurchaseItem {
+  id         String   @id @default(uuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity  Float
+  costPrice Float
+}
