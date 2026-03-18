@@ -16,7 +16,7 @@ export const POST = asyncHandler(async (req: Request) => {
         throw new AppError(400, "Validation failed", "VALIDATION_ERROR", errors);
     }
 
-    const { name, email, password, roleId } = parsedSignupData.data;
+    const { name, email, password } = parsedSignupData.data;
 
     const isUserExist = await getUserByEmail(email);
     if (isUserExist) {
@@ -25,7 +25,7 @@ export const POST = asyncHandler(async (req: Request) => {
 
     const passwordHash = await bcrypt.hash(password, config.BCRYPT_HASH_SALT);
 
-    const user = await createNewUser({ name, email, passwordHash, roleId });
+    const user = await createNewUser({ name, email, passwordHash });
 
     return Response.json({
         success: true,

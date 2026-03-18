@@ -1,12 +1,10 @@
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-
 import Logo from '../logo'
-import RegisterForm from '../forms/register-form'
 import AuthBackgroundShape from './auth-background'
+import SignupForm from '../forms/signup-form'
 
-const Register = () => {
+export default function Register() {
+
     return (
         <div className='relative flex h-auto min-h-screen items-center justify-center overflow-x-hidden px-4 py-10 sm:px-6 lg:px-8'>
             <div className='absolute'>
@@ -26,29 +24,12 @@ const Register = () => {
                 <CardContent>
                     {/* Register Form */}
                     <div className='space-y-4'>
-                        <RegisterForm />
+                        <SignupForm />
 
-                        <p className='text-muted-foreground text-center'>
-                            Already have an account?{' '}
-                            <a href='/login' className='text-card-foreground hover:underline'>
-                                Sign in instead
-                            </a>
-                        </p>
 
-                        <div className='flex items-center gap-4'>
-                            <Separator className='flex-1' />
-                            <p>or</p>
-                            <Separator className='flex-1' />
-                        </div>
-
-                        <Button variant='ghost' className='w-full' asChild>
-                            <a href='#'>Sign in with google</a>
-                        </Button>
                     </div>
                 </CardContent>
             </Card>
         </div>
     )
 }
-
-export default Register

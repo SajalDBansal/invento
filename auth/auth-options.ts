@@ -5,9 +5,10 @@ import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import bcrypt from "bcrypt";
-import { getUserByEmail } from "@/prisma/operations/user";
+import { getUserByEmail, updateGoogleUserWhileSignin } from "@/prisma/operations/user";
 import prisma from "@/lib/prisma";
 import { signinZodSchema } from "@/types/zod";
+import { UserRole } from "@/types/types"
 
 export const authOptions: NextAuthConfig = {
     adapter: PrismaAdapter(prisma),
@@ -39,7 +40,7 @@ export const authOptions: NextAuthConfig = {
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    role: user.role.name,
+                    role: user.role?.name as UserRole,
                     image: user.image
                 };
             }
@@ -66,14 +67,19 @@ export const authOptions: NextAuthConfig = {
             session.user.name = token.name as string;
             session.user.email = token.email as string;
             session.user.image = token.image as string;
-            session.user.role = token.role as string;
+            session.user.role = token.role as UserRole;
             return session;
         },
         signIn: async ({ account, profile }) => {
             if (account?.provider === "google") {
                 return !!profile?.email_verified
             }
-            return true // Do different verification for other providers that don't have `email_verified`
+            return true
+        },
+    },
+    events: {
+        createUser: async ({ user }) => {
+            await updateGoogleUserWhileSignin(user.id);
         },
     },
     // pages: {

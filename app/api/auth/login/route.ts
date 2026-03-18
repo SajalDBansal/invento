@@ -4,7 +4,6 @@ import { getUserByEmail } from "@/prisma/operations/user";
 import { signinZodSchema } from "@/types/zod";
 import { asyncHandler } from "@/utils/async-handler";
 import bcrypt from "bcrypt";
-import { success } from "zod";
 
 export const POST = asyncHandler(async (req: Request) => {
     const body = await req.json();
@@ -25,6 +24,12 @@ export const POST = asyncHandler(async (req: Request) => {
         400,
         "This account does not support password login",
         "NOT_A_CREDENTIAL_USER"
+    );
+
+    if (!user.isActive) throw new AppError(
+        401,
+        "Contact Admin - This account is not active yet",
+        "NOT_A_ACTIVE_USER"
     );
 
     const isValid = await bcrypt.compare(password, user.passwordHash);
