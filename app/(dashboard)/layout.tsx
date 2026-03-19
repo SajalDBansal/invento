@@ -1,5 +1,6 @@
 import { auth } from "@/auth/auth";
-import DashboardHeader from "@/components/dashboard-layout/dashboard-header";
+import DashboardFooter from "@/components/modules/dashboard-layout/dashboard-footer";
+import DashboardHeader from "@/components/modules/dashboard-layout/dashboard-header";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -12,8 +13,6 @@ export default async function ProtectedLayout({
     children: React.ReactNode;
 }>) {
     const session = await auth();
-    console.log(session);
-
 
     if (!session?.user) {
         redirect("/login");
@@ -25,11 +24,14 @@ export default async function ProtectedLayout({
             <DashboardHeader />
 
             {/* main */}
-            <main>
-                {children}
+            <main className="flex flex-1 flex-col">
+                <div className="flex flex-1 flex-col gap-2 mx-auto size-full max-w-7xl px-4 py-2 sm:py-6 sm:px-6">
+                    {children}
+                </div>
             </main>
 
             {/* footer*/}
+            <DashboardFooter />
 
         </div>
     )

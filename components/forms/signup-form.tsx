@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Separator } from '../ui/separator'
+import { Separator } from '@/components/ui/separator'
 import { signIn } from 'next-auth/react'
-import { Spinner } from '../ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { Controller, useForm } from "react-hook-form"
 import z from "zod";
 import { signupZodSchema } from '@/types/zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Field, FieldError, FieldGroup, FieldLabel } from '../ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 

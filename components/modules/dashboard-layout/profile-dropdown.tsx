@@ -3,6 +3,8 @@ import {
     SettingsIcon,
     UsersIcon,
     CirclePlusIcon,
+    Sun,
+    Moon,
 } from 'lucide-react'
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
@@ -16,10 +18,11 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Session } from 'next-auth'
-import { Button } from '../ui/button'
 import Link from 'next/link'
 import { getUserInitials } from '@/lib/utils'
-import SignOutButton from '../signOut'
+import { ModeToggle } from './mode-toggler'
+import { Button } from '@/components/ui/button'
+import SignOutButton from '@/components/signOut'
 
 type Props = {
     defaultOpen?: boolean
@@ -109,6 +112,17 @@ export default function ProfileDropdown({ defaultOpen, align = 'end', session }:
                 }
 
                 <DropdownMenuSeparator />
+                <ModeToggle
+                    trigger={
+                        <DropdownMenuItem className='px-4 py-2.5 text-base cursor-pointer flex sm:hidden'>
+                            <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                            <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                            <span>Toggle theme</span>
+                        </DropdownMenuItem>
+                    }
+                />
+
+                <DropdownMenuSeparator className='flex sm:hidden' />
 
                 <DropdownMenuItem
                     variant='destructive'

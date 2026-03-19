@@ -1,15 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Spinner } from '../ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { Controller, useForm } from "react-hook-form"
 import z from "zod";
 import { resetPasswordZodSchema } from '@/types/zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Field, FieldError, FieldGroup, FieldLabel } from '../ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'

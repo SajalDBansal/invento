@@ -13,3 +13,36 @@ export type NavItems = {
     UserRoles: UserRole[];
     icon: LucideIcon;
 };
+
+export type QuickAction = {
+    title: string;
+    link: string;
+    icon: React.ElementType;
+};
+
+type KpiKey =
+    | "todaySales"
+    | "todayPurchases"
+    | "todayExpenses"
+    | "lowStockItems"
+    | "todayProfit"
+    | "pendingPayments";
+
+export type DashbordKpiLayout = {
+    key: KpiKey,
+    title: string;
+    icon: LucideIcon;
+    description?: string;
+    trendLabel?: string;
+    link: string;
+};
+
+export type KpiCardProps = {
+    title: string;
+    value: string | number;
+    icon: LucideIcon;
+    description?: string;
+    trend?: number;
+    trendLabel?: string;
+    link: string;
+};

@@ -17,7 +17,7 @@ import { NAV_LINKS } from '@/public/data';
 import { getFilteredFeatures } from '@/lib/utils';
 import Link from 'next/link';
 import { Session } from 'next-auth';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 
 type Props = {
     defaultOpen?: boolean
@@ -46,7 +46,7 @@ export default function MenuDropdown({ defaultOpen, align = 'start', session }: 
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='px-4 py-2.5 text-base cursor-pointer' asChild>
-                        <Link href={"/invertory"}>
+                        <Link href={"/inventory"}>
                             <Package className='text-foreground size-5' />
                             <span>Inventory</span>
                         </Link>

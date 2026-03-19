@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import Logo from '../logo'
 import AuthBackgroundShape from './auth-background'
-import LoginForm from '../forms/login-form'
+import LoginForm from '@/components/forms/login-form'
+import Logo from '@/components/logo'
 
 export default function Login() {
 

@@ -6,14 +6,14 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Separator } from '../ui/separator'
+import { Separator } from '@/components/ui/separator'
 import { signIn } from 'next-auth/react'
-import { Spinner } from '../ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { Controller, useForm } from "react-hook-form"
 import z from "zod";
 import { signinZodSchema } from '@/types/zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Field, FieldError, FieldGroup, FieldLabel } from '../ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Blocks } from "lucide-react";
+import { Blocks, Moon, Sun } from "lucide-react";
 import { ModeToggle } from "./mode-toggler";
 import ProfileDropdown from "./profile-dropdown";
 import MenuDropdown from "./menu-dropdown";
@@ -7,6 +7,7 @@ import MenuNavigation from "./menu-navigation";
 import { auth } from "@/auth/auth";
 import NotificationPopover from "./notification-popover";
 import UrlBreadcrumbs from "./url-breadcrum";
+import { Button } from "@/components/ui/button";
 
 export default async function DashboardHeader() {
     const session = await auth();
@@ -34,7 +35,15 @@ export default async function DashboardHeader() {
 
                     {/* RIGHT */}
                     <div className="flex items-center gap-x-2">
-                        <ModeToggle />
+                        <ModeToggle
+                            trigger={
+                                <Button variant="ghost" size="icon" className="hidden sm:flex">
+                                    <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                                    <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                                    <span className="sr-only">Toggle theme</span>
+                                </Button>
+                            }
+                        />
 
                         <NotificationPopover />
 
@@ -43,7 +52,7 @@ export default async function DashboardHeader() {
                 </div>
             </div>
 
-            < div className="mx-auto max-w-7xl gap-2 px-4 py-2 sm:px-6" >
+            < div className="mx-auto max-w-7xl gap-2 px-4 py-2 sm:px-6 bg-background" >
                 {/* BREADCRUMB */}
                 <UrlBreadcrumbs />
             </div >

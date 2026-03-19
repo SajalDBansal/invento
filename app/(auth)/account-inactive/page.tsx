@@ -1,5 +1,4 @@
-import ForgetPassword from "@/components/auth/forgot-password";
-import InactiveAccount from "@/components/auth/inactive-account";
+import InactiveAccount from "@/components/modules/auth/inactive-account";
 
 export default function InactiveAccountPage() {
     return (

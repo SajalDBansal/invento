@@ -6,7 +6,7 @@ import {
     NavigationMenuTrigger,
     NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LayoutDashboard, Package } from "lucide-react";
 import { NAV_LINKS } from "@/public/data";

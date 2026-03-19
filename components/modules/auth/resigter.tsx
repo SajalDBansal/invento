@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import Logo from '../logo'
 import AuthBackgroundShape from './auth-background'
-import ForgetPasswordForm from '../forms/forgot-password-form'
+import SignupForm from '@/components/forms/signup-form'
+import Logo from '@/components/logo'
 
-export default function ForgetPassword() {
+export default function Register() {
 
     return (
         <div className='relative flex h-auto min-h-screen items-center justify-center overflow-x-hidden px-4 py-10 sm:px-6 lg:px-8'>
@@ -16,15 +16,17 @@ export default function ForgetPassword() {
                     <Logo className='gap-3' />
 
                     <div>
-                        <CardTitle className='mb-1.5 text-2xl'>Forgot Password?</CardTitle>
-                        <CardDescription className='text-base'>Enter your email and we'll send you instructions to reset your password.</CardDescription>
+                        <CardTitle className='mb-1.5 text-2xl'>Sign Up to Invento</CardTitle>
+                        <CardDescription className='text-base'>Manage your business in style.</CardDescription>
                     </div>
                 </CardHeader>
 
                 <CardContent>
-                    {/* Forget Password Form */}
+                    {/* Register Form */}
                     <div className='space-y-4'>
-                        <ForgetPasswordForm />
+                        <SignupForm />
+
+
                     </div>
                 </CardContent>
             </Card>
