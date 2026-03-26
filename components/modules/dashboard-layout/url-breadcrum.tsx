@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
 import { Home } from "lucide-react";
+import { Fragment } from "react";
 
 export default function UrlBreadcrumbs() {
     const pathname = usePathname()
@@ -37,9 +38,8 @@ export default function UrlBreadcrumbs() {
                 </BreadcrumbItem>
 
                 {breadcrumbs.map((crumb, index) => (
-                    <div key={crumb.href} className="flex items-center gap-x-2">
+                    <Fragment key={crumb.href}>
                         <BreadcrumbSeparator />
-
                         <BreadcrumbItem>
                             {index === breadcrumbs.length - 1 ? (
                                 <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
@@ -49,7 +49,7 @@ export default function UrlBreadcrumbs() {
                                 </BreadcrumbLink>
                             )}
                         </BreadcrumbItem>
-                    </div>
+                    </Fragment>
                 ))}
             </BreadcrumbList>
         </Breadcrumb>

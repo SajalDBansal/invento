@@ -11,8 +11,10 @@ export default function DashboardPage() {
     return (
         <div className="space-y-6">
 
+            {/* Add no value present in each tab */}
+
             {/* Heading */}
-            <div className='grid sm:grid-cols-2 gap-4 lg:gap-6'>
+            <div className='grid sm:grid-cols-2 gap-4'>
                 <div className="text-2xl sm:text-4xl font-bold">
                     Dashboard
                 </div>
@@ -20,12 +22,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Replacable */}
-            <div className='grid grid-cols-2 gap-4 lg:gap-6 lg:grid-cols-3'>
+            <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
 
                 <KPISection />
                 <AnalyticsSection />
 
-                <div className='col-span-full grid gap-4 lg:gap-6 lg:grid-cols-2'>
+                <div className='col-span-full grid gap-4 lg:grid-cols-2'>
                     <InventoryAlertCard />
                     <RecentActivitiesCard />
                 </div>
@@ -33,7 +35,7 @@ export default function DashboardPage() {
                 {/* Financials section */}
                 <FinancialSection />
 
-                <div className='col-span-full grid gap-4 lg:gap-6 lg:grid-cols-2'>
+                <div className='col-span-full grid gap-4 lg:grid-cols-2'>
                     <CustomerCard />
                     <SupplierCard />
                 </div>

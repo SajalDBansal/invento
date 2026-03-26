@@ -1,11 +1,10 @@
-import { DashbordKpiLayout, NavSection, QuickAction } from "@/types/types";
+import { ActivityMetaType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
 
 import {
     BarChart3,
     FileText,
     Receipt,
     RotateCcw,
-    Tag,
     Users,
     Truck,
     Wallet,
@@ -17,117 +16,143 @@ import {
     AlertTriangle,
     TrendingUp,
     CreditCard,
-    History,
-    BadgeDollarSign,
-    Landmark,
+    Activity,
+    Boxes,
+    UserCog,
+    Book,
+    Wrench,
+    Hammer,
+    Drill,
+    Settings,
+    Cog,
 } from "lucide-react";
 
-
-export const NAV_LINKS: NavSection[] = [
+export const NAVIGATION: NavSection[] = [
     {
-        title: "Overview",
+        title: "Dashboard",
+        link: "/dashboard",
+        roles: ["Admin", "Manager", "Default", "Cashier"],
+        items: [],
+    },
+    {
+        title: "Operations",
+        roles: ["Admin", "Manager", "Cashier"],
+        items: [
+            {
+                title: "Sales",
+                icon: ShoppingCart,
+                children: [
+                    {
+                        title: "Invoices",
+                        link: "/sales/invoices",
+                    },
+                    {
+                        title: "Returns",
+                        link: "/sales/returns",
+                    },
+                    {
+                        title: "Discounts",
+                        link: "/sales/discounts",
+                        roles: ["Admin", "Manager"],
+                    },
+                ],
+            },
+            {
+                title: "Purchases",
+                icon: Truck,
+                roles: ["Admin", "Manager"],
+                link: "/purchases",
+            },
+        ],
+    },
+    {
+        title: "Catalog",
+        roles: ["Admin", "Manager"],
+        items: [
+            {
+                title: "Products",
+                icon: Package,
+                link: "/products",
+            },
+            {
+                title: "Inventory",
+                icon: Boxes,
+                link: "/inventory",
+            },
+        ],
+    },
+    {
+        title: "Contacts",
+        roles: ["Admin", "Manager"],
+        items: [
+            {
+                title: "Customers",
+                icon: Users,
+                link: "/customers",
+            },
+            {
+                title: "Suppliers",
+                icon: UserCog,
+                link: "/suppliers",
+            },
+        ],
+    },
+    {
+        title: "Reports",
+        roles: ["Admin", "Manager", "Default", "Cashier"],
         items: [
             {
                 title: "Analytics",
-                link: "/overview/analytics",
-                UserRoles: ["Admin", "Manager"],
+                link: "/dashboard/analytics",
                 icon: BarChart3,
             },
             {
                 title: "Reports",
-                link: "/overview/reports",
-                UserRoles: ["Admin", "Manager"],
+                link: "/dashboard/reports",
                 icon: FileText,
+                roles: ["Admin", "Manager"],
             },
             {
                 title: "Activities",
-                link: "/overview/activities",
-                UserRoles: ["Admin"],
-                icon: History,
+                link: "/dashboard/activities",
+                icon: Activity,
             },
         ],
     },
     {
-        title: "Records",
+        title: "Finance",
+        roles: ["Admin", "Manager"],
         items: [
             {
-                title: "Invoices",
-                link: "/ledger/sales/invoices",
-                UserRoles: ["Admin", "Cashier", "Manager"],
-                icon: Receipt,
-            },
-            {
-                title: "Returns",
-                link: "/ledger/sales/returns",
-                UserRoles: ["Admin", "Cashier", "Manager"],
-                icon: RotateCcw,
-            },
-            {
-                title: "Discounts",
-                link: "/ledger/sales/discounts",
-                UserRoles: ["Admin", "Manager"],
-                icon: Tag,
-            },
-        ],
-    },
-    {
-        title: "Ledger",
-        items: [
-            {
-                title: "Bank",
-                link: "/ledger/bank",
-                UserRoles: ["Admin", "Manager"],
-                icon: Landmark,
-            },
-            {
-                title: "Cash",
-                link: "/ledger/cash",
-                UserRoles: ["Admin", "Manager"],
-                icon: Wallet,
-            },
-            {
-                title: "Purchase",
-                link: "/ledger/purchases",
-                UserRoles: ["Admin"],
-                icon: ShoppingCart,
-            },
-            {
-                title: "Sales",
-                link: "/ledger/sales",
-                UserRoles: ["Admin"],
-                icon: BadgeDollarSign,
-            },
-        ],
-    },
-    {
-        title: "Management",
-        items: [
-            {
-                title: "Customers",
-                link: "/management/customers",
-                UserRoles: ["Admin", "Cashier", "Manager"],
-                icon: Users,
-            },
-            {
-                title: "Suppliers",
-                link: "/management/suppliers",
-                UserRoles: ["Admin", "Manager"],
-                icon: Truck,
+                title: "Ledger",
+                icon: Book,
+                children: [
+                    {
+                        title: "Overview",
+                        link: "/ledger",
+                    },
+                    {
+                        title: "Cash",
+                        link: "/ledger/cash",
+                    },
+                    {
+                        title: "Bank",
+                        link: "/ledger/bank",
+                    },
+                ],
             },
             {
                 title: "Expenses",
-                link: "/management/expenses",
-                UserRoles: ["Admin", "Manager"],
-                icon: Wallet,
+                icon: Receipt,
+                link: "/expenses",
             },
             {
                 title: "Taxes",
-                link: "/management/taxes",
-                UserRoles: ["Admin"],
+                link: "/taxes",
                 icon: Percent,
             },
         ],
-    },
+    }
 ];
 
 export const QUICK_ACTIONS: QuickAction[] = [
@@ -210,3 +235,22 @@ export const KPI_CARDS: DashbordKpiLayout[] = [
         link: "/ledger/sales/invoices?filter=pending",
     },
 ];
+
+export const ACTIVITY_META: ActivityMetaType = {
+    sales: {
+        icon: "ShoppingCart",
+        color: "text-green-500",
+    },
+    purchases: {
+        icon: "Truck",
+        color: "text-blue-500",
+    },
+    inventory: {
+        icon: "Boxes",
+        color: "text-yellow-500",
+    },
+    payments: {
+        icon: "CreditCard",
+        color: "text-purple-500",
+    },
+} as const;

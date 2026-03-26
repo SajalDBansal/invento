@@ -19,13 +19,13 @@ export default async function ProtectedLayout({
     }
 
     return (
-        <div className="w-full min-h-screen flex flex-col mx-auto">
+        <div className="w-full min-h-screen flex flex-col mx-auto bg-gray-200 dark:bg-black">
             {/* header */}
             <DashboardHeader />
 
             {/* main */}
             <main className="flex flex-1 flex-col">
-                <div className="flex flex-1 flex-col gap-2 mx-auto size-full max-w-7xl px-4 py-2 sm:py-6 sm:px-6">
+                <div className="flex flex-1 flex-col gap-2 mx-auto size-full max-w-8xl px-4 py-2 sm:py-6 sm:px-6">
                     {children}
                 </div>
             </main>

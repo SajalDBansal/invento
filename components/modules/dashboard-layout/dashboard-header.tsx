@@ -16,7 +16,7 @@ export default async function DashboardHeader() {
         <header className="sticky top-0 z-50">
             {/* TOP BAR */}
             <div className="border-b bg-card">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+                <div className="mx-auto flex max-w-8xl items-center justify-between px-4 py-3 sm:px-6">
 
                     {/* LEFT */}
                     <div className="flex items-center gap-4">
@@ -52,7 +52,7 @@ export default async function DashboardHeader() {
                 </div>
             </div>
 
-            < div className="mx-auto max-w-7xl gap-2 px-4 py-2 sm:px-6 bg-background" >
+            < div className="mx-auto max-w-8xl gap-2 px-4 py-2 sm:px-6 bg-white rounded-b-2xl dark:bg-black" >
                 {/* BREADCRUMB */}
                 <UrlBreadcrumbs />
             </div >

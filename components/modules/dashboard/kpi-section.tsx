@@ -1,24 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { KPI_CARDS } from "@/public/data";
-import { KpiCardProps } from "@/types/types";
-import { TrendingUp, TrendingDown, LucideIcon } from "lucide-react";
+import { KpiBackendData, KpiBackendKey, KpiCardProps } from "@/types/types";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
 
-type KpiKey =
-    | "todaySales"
-    | "todayPurchases"
-    | "todayExpenses"
-    | "lowStockItems"
-    | "todayProfit"
-    | "pendingPayments";
-
-type KpiData = {
-    value: string;
-    trend?: number;
-};
-
-const data: Record<KpiKey, KpiData> = {
+export const KPI_DATA: Record<KpiBackendKey, KpiBackendData> = {
     todaySales: {
         value: "₹12,400",
         trend: 8,
@@ -40,20 +27,19 @@ const data: Record<KpiKey, KpiData> = {
     pendingPayments: {
         value: "₹5,800",
     },
-
 }
 
 export default function KPISection() {
     return (
-        <div className='col-span-full grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+        <div className='col-span-full grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6'>
             {
                 KPI_CARDS.map((card, index) => (
                     <KpiCard
                         key={index}
                         title={card.title}
-                        value={data[card.key].value}
+                        value={KPI_DATA[card.key].value}
                         icon={card.icon}
-                        trend={data[card.key].trend}
+                        trend={KPI_DATA[card.key].trend}
                         trendLabel={card.trendLabel}
                         description={card.description}
                         link={card.link}
@@ -77,23 +63,25 @@ function KpiCard({
 
     return (
         <Link href={link}>
-            <Card className="@container/card p-4 gap-2">
+            <Card className="@container/card p-4 gap-2 h-full">
                 <CardHeader className="p-0">
-                    <CardDescription>
-                        {title}
-                    </CardDescription>
-                    <CardTitle className="text-xl lg:text-2xl font-semibold tabular-nums pl-2">
-                        {value}
-                    </CardTitle>
-                    <CardAction className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col space-y-1">
+                        <CardDescription className="truncate">
+                            {title}
+                        </CardDescription>
+                        <CardTitle className="text-xl lg:text-2xl font-semibold tabular-nums pl-2">
+                            {value}
+                        </CardTitle>
+                    </div>
+                    <CardAction className="hidden sm:flex flex-col items-center space-y-2">
                         <div className="border p-2 rounded-lg">
                             <Icon />
                         </div>
                     </CardAction>
                 </CardHeader>
 
-                <CardFooter className="flex-col items-start gap-1.5 text-sm p-0">
-                    <div className="flex gap-2 font-medium">
+                <CardFooter className="gap-1.5 text-sm p-0 flex items-end h-full">
+                    <div className="flex flex-col sm:flex-row gap-2 font-medium">
                         {
                             trend && (trend > 0 ?
                                 <Badge variant="outline" className="bg-[#00c130]/20 text-[#00c130] border-none">
@@ -106,11 +94,10 @@ function KpiCard({
                                     {trend}%
                                 </Badge>)
                         }
-                        {trend ? (trendLabel) : (description)}
+                        {trend && (trendLabel)}
                     </div>
-                    {/* <div className="text-muted-foreground text-sm">
-                    description
-                </div> */}
+                    {!trend && (description)}
+
                 </CardFooter>
             </Card>
         </Link>

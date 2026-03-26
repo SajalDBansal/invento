@@ -13,8 +13,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { NAV_LINKS } from '@/public/data';
-import { getFilteredFeatures } from '@/lib/utils';
+import { NAVIGATION } from '@/public/data';
+import { filterNavByRole } from '@/lib/utils';
 import Link from 'next/link';
 import { Session } from 'next-auth';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ type Props = {
 export default function MenuDropdown({ defaultOpen, align = 'start', session }: Props) {
 
     const userRole = session?.user.role ?? "Default";
+    const filteredNav = filterNavByRole(NAVIGATION, userRole);
 
     return (
         <DropdownMenu defaultOpen={defaultOpen}>
@@ -38,7 +39,77 @@ export default function MenuDropdown({ defaultOpen, align = 'start', session }: 
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-80' align={align || 'start'}>
 
-                <DropdownMenuGroup>
+                {filteredNav.map((section, index) => (
+                    <div key={index}>
+                        <DropdownMenuGroup>
+                            {/* Section Title (clickable if link exists) */}
+                            {section.link ?
+                                <DropdownMenuItem
+                                    className="px-4 py-2.5 text-base cursor-pointer"
+                                    asChild
+                                >
+                                    <Link href={section.link || "#"}>
+                                        <LayoutDashboard className='text-foreground size-5' />
+                                        {section.title}
+                                    </Link>
+                                </DropdownMenuItem>
+                                :
+                                <DropdownMenuLabel>
+                                    {section.title}
+                                </DropdownMenuLabel>
+                            }
+
+                            {/* Section Items */}
+                            {section.items.map((item, idx) => {
+                                // If item has children → render group
+                                if (item.children?.length) {
+                                    return (
+                                        <div key={idx} className="pl-2">
+                                            <DropdownMenuLabel className="text-xs text-muted-foreground">
+                                                {item.title}
+                                            </DropdownMenuLabel>
+
+                                            {item.children.map((child, cIdx) => (
+                                                <DropdownMenuItem
+                                                    key={cIdx}
+                                                    className="px-4 py-2.5 text-base cursor-pointer"
+                                                    asChild
+                                                >
+                                                    <Link href={child.link || "#"}>
+                                                        <span>{child.title}</span>
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </div>
+                                    );
+                                }
+
+                                // Normal item
+                                return (
+                                    <DropdownMenuItem
+                                        key={idx}
+                                        className="px-4 py-2.5 text-base cursor-pointer"
+                                        asChild
+                                    >
+                                        <Link href={item.link || "#"}>
+                                            {item.icon && (
+                                                <item.icon className="size-5 text-foreground" />
+                                            )}
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                );
+                            })}
+                        </DropdownMenuGroup>
+
+                        {/* Divider between sections */}
+                        {index !== filteredNav.length - 1 && (
+                            <DropdownMenuSeparator />
+                        )}
+                    </div>
+                ))}
+
+                {/* <DropdownMenuGroup>
                     <DropdownMenuItem className='px-4 py-2.5 text-base cursor-pointer' asChild>
                         <Link href={"/dashboard"}>
                             <LayoutDashboard className='text-foreground size-5' />
@@ -54,9 +125,9 @@ export default function MenuDropdown({ defaultOpen, align = 'start', session }: 
 
                 </DropdownMenuGroup>
 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator /> */}
 
-                {
+                {/* {
                     NAV_LINKS.map((section, index) => {
                         const links = getFilteredFeatures(section.items, userRole);
 
@@ -77,7 +148,7 @@ export default function MenuDropdown({ defaultOpen, align = 'start', session }: 
                             </DropdownMenuGroup>
                         )
                     })
-                }
+                } */}
             </DropdownMenuContent>
         </DropdownMenu>
     )

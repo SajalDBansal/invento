@@ -1,7 +1,7 @@
 export default function AnalyticsSection() {
     return (
-        <div className="col-span-full grid grid-cols-2 gap-4 lg:gap-6 lg:grid-cols-3">
-            <div className='grid gap-4 lg:gap-6 max-xl:col-span-full lg:max-xl:grid-cols-2'>
+        <div className="col-span-full grid grid-cols-2 gap-4 lg:grid-cols-3">
+            <div className='grid gap-4 max-xl:col-span-full lg:max-xl:grid-cols-2'>
 
                 <div className='justify-between gap-3 *:data-[slot=card-content]:space-y-5' >
                     <div className="bg-white/10 rounded">
