@@ -138,3 +138,32 @@ export type DashboardDataType = {
     customersData: DashboardPartiesData;
     suppliersData: DashboardPartiesData;
 }
+
+export type CustomersPageKPIKey =
+    | "totalCustomers"
+    | "activeCustomers"
+    | "totalReceivable"
+    | "highRiskCustomers";
+
+export type CustomersPageKPIData = {
+    value: string;
+    trend?: number;
+};
+
+export type CustomersDataType = {
+    kpiData: Record<CustomersPageKPIKey, CustomersPageKPIData>;
+}
+
+export type CustomersKpiLayout = {
+    key: CustomersPageKPIKey,
+    title: string;
+    icon: LucideIcon;
+    description?: string;
+    trendLabel?: string;
+};
+
+export type CustomersKPICardProp = {
+    title: string;
+    value: string | number;
+    icon: LucideIcon;
+}

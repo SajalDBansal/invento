@@ -1,4 +1,4 @@
-import { ActivityMetaType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
+import { ActivityMetaType, CustomersKpiLayout, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
 
 import {
     BarChart3,
@@ -25,6 +25,7 @@ import {
     Drill,
     Settings,
     Cog,
+    UserCheck,
 } from "lucide-react";
 
 export const NAVIGATION: NavSection[] = [
@@ -254,3 +255,32 @@ export const ACTIVITY_META: ActivityMetaType = {
         color: "text-purple-500",
     },
 } as const;
+
+export const KPI_CARDS_CUSTOMERS_PAGE: CustomersKpiLayout[] = [
+    {
+        key: "totalCustomers",
+        title: "Total Customers",
+        icon: Users,
+        description: "Total registered customers",
+    },
+    {
+        key: "activeCustomers",
+        title: "Active Customers",
+        icon: UserCheck,
+        description: "Customers with recent activity",
+        trendLabel: "vs last period",
+    },
+    {
+        key: "totalReceivable",
+        title: "Total Receivables",
+        icon: IndianRupee,
+        description: "Outstanding payments from customers",
+        trendLabel: "vs last period",
+    },
+    {
+        key: "highRiskCustomers",
+        title: "High Risk Customers",
+        icon: AlertTriangle,
+        description: "Customers with overdue or credit risk",
+    },
+];

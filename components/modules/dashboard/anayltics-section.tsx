@@ -121,7 +121,7 @@ function WeeklyRevenueChart({ weeklyData }: {
     }[]
 }) {
     return (
-        <Card className="@container/card p-4 gap-2 space-y-2 col-span-full">
+        <Card className="@container/card p-4 gap-2 space-y-2 col-span-full h-full justify-between">
             <CardHeader className="p-0">
                 <div className="grid flex-1 gap-1">
                     <CardTitle>Weekly Revenue Chart</CardTitle>

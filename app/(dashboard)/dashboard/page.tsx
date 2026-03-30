@@ -1,4 +1,4 @@
-import QuickActions from "@/components/modules/dashboard/quick-action-dialog";
+import QuickActions from "@/components/modules/dashboard-layout/quick-action-dialog";
 import KPISection from "@/components/modules/dashboard/kpi-section";
 import AnalyticsSection from "@/components/modules/dashboard/anayltics-section";
 import InventoryAlertCard from "@/components/modules/dashboard/inventory-alert-card";
