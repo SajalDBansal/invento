@@ -5,31 +5,9 @@ import { KpiBackendData, KpiBackendKey, KpiCardProps } from "@/types/types";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
 
-export const KPI_DATA: Record<KpiBackendKey, KpiBackendData> = {
-    todaySales: {
-        value: "₹12,400",
-        trend: 8,
-    },
-    todayPurchases: {
-        value: "₹7,200",
-        trend: 3,
-    },
-    todayExpenses: {
-        value: "₹2,100",
-    },
-    lowStockItems: {
-        value: "23",
-    },
-    todayProfit: {
-        value: "₹3,100",
-        trend: 6,
-    },
-    pendingPayments: {
-        value: "₹5,800",
-    },
-}
 
-export default function KPISection() {
+
+export default function KPISection({ data }: { data: Record<KpiBackendKey, KpiBackendData> }) {
     return (
         <div className='col-span-full grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6'>
             {
@@ -37,9 +15,9 @@ export default function KPISection() {
                     <KpiCard
                         key={index}
                         title={card.title}
-                        value={KPI_DATA[card.key].value}
+                        value={data[card.key].value}
                         icon={card.icon}
-                        trend={KPI_DATA[card.key].trend}
+                        trend={data[card.key].trend}
                         trendLabel={card.trendLabel}
                         description={card.description}
                         link={card.link}

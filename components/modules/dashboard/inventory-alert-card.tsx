@@ -32,164 +32,16 @@ import { cn } from "@/lib/utils";
 import { InventoryAlertProp } from "@/types/types";
 import { RenderIcon } from "@/components/render-icon";
 
-export const INVENTORY_ALERT_CARD: InventoryAlertProp = {
-    low: [
-        {
-            id: "low-1",
-            productName: "Adjustable Wrench",
-            company: "Taparia",
-            code: "HW-AW-101",
-            units: "5 pcs",
-            icon: "Wrench",
-        },
-        {
-            id: "low-2",
-            productName: "Claw Hammer",
-            company: "Stanley",
-            code: "HW-CH-202",
-            units: "3 pcs",
-            icon: "Hammer",
-        },
-        {
-            id: "low-3",
-            productName: "Electric Drill Machine",
-            company: "Bosch",
-            code: "HW-DR-303",
-            units: "2 pcs",
-            icon: "Drill",
-        },
-        {
-            id: "low-4",
-            productName: "PVC Pipe (1 inch)",
-            company: "Supreme",
-            code: "HW-PVC-404",
-            units: "10 pcs",
-            icon: "Package",
-        },
-        {
-            id: "low-5",
-            productName: "Hex Key Set",
-            company: "Ingco",
-            code: "HW-HK-505",
-            units: "4 pcs",
-            icon: "Settings",
-        },
-        {
-            id: "low-6",
-            productName: "Bearing Set",
-            company: "SKF",
-            code: "HW-BR-606",
-            units: "6 pcs",
-            icon: "Cog",
-        },
-    ],
 
-    fast: [
-        // {
-        //     id: "fast-1",
-        //     productName: "Nails Pack (2 inch)",
-        //     company: "Generic",
-        //     code: "HW-NL-111",
-        //     units: "120 pcs",
-        //     icon: "Hammer",
-        // },
-        // {
-        //     id: "fast-2",
-        //     productName: "Screws Pack",
-        //     company: "Hilti",
-        //     code: "HW-SC-222",
-        //     units: "95 pcs",
-        //     icon: "Settings",
-        // },
-        // {
-        //     id: "fast-3",
-        //     productName: "Measuring Tape",
-        //     company: "Freemans",
-        //     code: "HW-MT-333",
-        //     units: "40 pcs",
-        //     icon: "Wrench",
-        // },
-        // {
-        //     id: "fast-4",
-        //     productName: "Drill Bits Set",
-        //     company: "Bosch",
-        //     code: "HW-DB-444",
-        //     units: "30 pcs",
-        //     icon: "Drill",
-        // },
-        // {
-        //     id: "fast-5",
-        //     productName: "Wall Plugs",
-        //     company: "Fischer",
-        //     code: "HW-WP-555",
-        //     units: "80 pcs/day",
-        //     icon: "Package",
-        // },
-        // {
-        //     id: "fast-6",
-        //     productName: "Cutting Blade",
-        //     company: "Makita",
-        //     code: "HW-CB-666",
-        //     units: "25 pcs/day",
-        //     icon: "Cog",
-        // },
-    ],
-
-    out: [
-        {
-            id: "out-1",
-            productName: "Angle Grinder",
-            company: "Makita",
-            code: "HW-AG-777",
-            icon: "Drill",
-        },
-        {
-            id: "out-2",
-            productName: "Pipe Cutter",
-            company: "Taparia",
-            code: "HW-PC-888",
-            icon: "Wrench",
-        },
-        {
-            id: "out-3",
-            productName: "Paint Roller Set",
-            company: "Asian Paints",
-            code: "HW-PR-999",
-            icon: "Package",
-        },
-        {
-            id: "out-4",
-            productName: "Spirit Level Tool",
-            company: "Stanley",
-            code: "HW-SL-112",
-            icon: "Settings",
-        },
-        {
-            id: "out-5",
-            productName: "Hand Saw",
-            company: "Bosch",
-            code: "HW-HS-223",
-            icon: "Hammer",
-        },
-        {
-            id: "out-6",
-            productName: "Grease Gun",
-            company: "Groz",
-            code: "HW-GG-334",
-            icon: "Cog",
-        },
-    ],
-}
-
-export default function InventoryAlertCard() {
+export default function InventoryAlertCard({ data }: { data: InventoryAlertProp }) {
     type StockCategory = keyof InventoryAlertProp;
     const [stockCategory, setStockCategory] = useState<StockCategory>("out");
     const [filteredData, setFilteredData] = useState(
-        INVENTORY_ALERT_CARD[stockCategory]
+        data[stockCategory]
     );
 
     useEffect(() => {
-        setFilteredData(INVENTORY_ALERT_CARD[stockCategory]);
+        setFilteredData(data[stockCategory]);
     }, [stockCategory]);
 
     const onClearButtonClick = (dataId: string) => {

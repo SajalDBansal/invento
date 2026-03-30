@@ -85,10 +85,56 @@ export type RecentActivitiesProp = {
     description?: string;
     timeStamp: string;
     type: ActivityType;
-}
+}[]
 
 export type ActivityMetaType = Record<ActivityType, { icon: string, color: string }>;
 
 export type ActivityType = "sales" | "purchases" | "inventory" | "payments";
 
 export type ActivityFilter = ActivityType | "all";
+
+export type DashboardFinanceSectionProp = {
+    netRevenue: string;
+    netExpenses: string;
+    netMargin: string;
+    chartData: {
+        date: string;
+        revenue: number;
+        expense: number;
+    }[]
+}
+
+export type DashboardAnalyticsData = {
+    salesTarget: number,
+    weeklyRevenueChartData: {
+        day: string;
+        revenue: number;
+    }[],
+    salesChartData: {
+        month: string;
+        sales: number;
+    }[]
+}
+
+export type DashboardPartiesDataProp = {
+    id: string;
+    name: string;
+    status: string;
+    balance: number;
+    date: string;
+}
+
+export type DashboardPartiesData = {
+    top: DashboardPartiesDataProp[];
+    new: DashboardPartiesDataProp[];
+}
+
+export type DashboardDataType = {
+    financeSectiondata: DashboardFinanceSectionProp;
+    kpiData: Record<KpiBackendKey, KpiBackendData>;
+    analyticsData: DashboardAnalyticsData;
+    inventoryAlertData: InventoryAlertProp;
+    recentActivitiesData: RecentActivitiesProp;
+    customersData: DashboardPartiesData;
+    suppliersData: DashboardPartiesData;
+}
