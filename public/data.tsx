@@ -1,4 +1,4 @@
-import { ActivityMetaType, CustomersKpiLayout, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
+import { ActivityMetaType, CustomersKpiLayout, CustomerStatus, CustomerType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
 
 import {
     BarChart3,
@@ -20,13 +20,12 @@ import {
     Boxes,
     UserCog,
     Book,
-    Wrench,
-    Hammer,
-    Drill,
-    Settings,
-    Cog,
     UserCheck,
+    LucideIcon,
+    Ban, Check, Store, X
 } from "lucide-react";
+
+
 
 export const NAVIGATION: NavSection[] = [
     {
@@ -284,3 +283,53 @@ export const KPI_CARDS_CUSTOMERS_PAGE: CustomersKpiLayout[] = [
         description: "Customers with overdue or credit risk",
     },
 ];
+
+export const customerStatusConfig: Record<
+    CustomerStatus,
+    {
+        label: string
+        icon: LucideIcon
+        className: string
+    }
+> = {
+    active: {
+        icon: Check,
+        label: "Active",
+        className: "text-green-500",
+    },
+    inactive: {
+        label: "Inactive",
+        icon: X,
+        className: "text-yellow-500",
+    },
+    blocked: {
+        label: "Blocked",
+        icon: Ban,
+        className: "text-red-500",
+    },
+} as const
+
+export const customerTypeConfig: Record<
+    CustomerType,
+    {
+        label: string
+        icon: LucideIcon
+        className: string
+    }
+> = {
+    wholesale: {
+        label: "Wholesale",
+        icon: Store,
+        className: "text-blue-500",
+    },
+    retail: {
+        label: "Retail",
+        icon: Users,
+        className: "text-purple-500",
+    },
+    cash: {
+        label: "Cash",
+        icon: Wallet,
+        className: "text-orange-500",
+    },
+}

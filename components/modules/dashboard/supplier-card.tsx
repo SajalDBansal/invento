@@ -75,7 +75,7 @@ export default function SupplierCard({ data }: { data: DashboardPartiesData }) {
                                     <TableRow
                                         className="cursor-pointer"
                                         key={customer.id}
-                                        onClick={() => router.push(`/customers/${customer.id}`)}>
+                                        onClick={() => router.push(`/suppliers/${customer.id}`)}>
                                         <TableCell className="hidden md:table-cell">{customer.id}</TableCell>
                                         <TableCell className="font-medium underline">{customer.name}</TableCell>
                                         <TableCell className="hidden md:table-cell">

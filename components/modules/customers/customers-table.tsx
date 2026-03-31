@@ -16,17 +16,9 @@ import {
     type SortingState,
     type VisibilityState,
 } from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
-import { z } from "zod"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-    type ChartConfig,
-} from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     Drawer,
@@ -39,6 +31,8 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 import {
+    DropdownMenuGroup,
+    DropdownMenuLabel,
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
@@ -55,6 +49,28 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "@/components/ui/command"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import {
     Table,
@@ -70,222 +86,310 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleCheck, Columns2, EllipsisVertical, Funnel, Loader, OctagonAlert, Plus, RotateCw, TrendingUp } from "lucide-react"
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ToggleGroup } from "radix-ui"
-import Link from "next/link"
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Archive, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleCheck, Columns2, Download, EllipsisVertical, FileText, Funnel, Loader, OctagonAlert, RotateCw, CirclePlus, Ban, LucideIcon, Check, X, Users, Store, Wallet, ChevronsUpDown } from "lucide-react"
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Field, FieldGroup } from "@/components/ui/field"
 import { useEffect, useId, useState } from 'react'
 import { LoaderCircleIcon, SearchIcon } from 'lucide-react'
+import { formatCurrency } from "@/lib/utils"
+import Link from "next/link"
+import { CustomerBalance, CustomerStatus, customerTableProps, customerTableType, CustomerType } from "@/types/types"
+import { customerStatusConfig, customerTypeConfig } from "@/public/data"
 
-export const schema = z.object({
-    id: z.number(),
-    header: z.string(),
-    type: z.string(),
-    status: z.string(),
-    target: z.string(),
-    limit: z.string(),
-    reviewer: z.string(),
-})
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <div className="flex items-center justify-center">
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                />
-            </div>
-        ),
-        cell: ({ row }) => (
-            <div className="flex items-center justify-center">
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                />
-            </div>
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "header",
-        header: "Header",
-        cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
-    },
-    {
-        accessorKey: "type",
-        header: "Section Type",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <Badge variant="outline" className="px-1.5 text-muted-foreground">
-                    {row.original.type}
-                </Badge>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <Badge variant="outline" className="px-1.5 text-muted-foreground">
-                {row.original.status === "Done" ? (
-                    <CircleCheck className="fill-green-500 dark:fill-green-400" />
-                ) : (
-                    <Loader />
-                )}
-                {row.original.status}
-            </Badge>
-        ),
-    },
-    {
-        accessorKey: "target",
-        header: () => <div className="w-full text-right">Target</div>,
-        cell: ({ row }) => (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-                        loading: `Saving ${row.original.header}`,
-                        success: "Done",
-                        error: "Error",
-                    })
-                }}
-            >
-                <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-                    Target
-                </Label>
-                <Input
-                    className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
-                    defaultValue={row.original.target}
-                    id={`${row.original.id}-target`}
-                />
-            </form>
-        ),
-    },
-    {
-        accessorKey: "limit",
-        header: () => <div className="w-full text-right">Limit</div>,
-        cell: ({ row }) => (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-                        loading: `Saving ${row.original.header}`,
-                        success: "Done",
-                        error: "Error",
-                    })
-                }}
-            >
-                <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-                    Limit
-                </Label>
-                <Input
-                    className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
-                    defaultValue={row.original.limit}
-                    id={`${row.original.id}-limit`}
-                />
-            </form>
-        ),
-    },
-    {
-        accessorKey: "reviewer",
-        header: "Reviewer",
-        cell: ({ row }) => {
-            const isAssigned = row.original.reviewer !== "Assign reviewer"
+const statusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+    { label: "Blocked", value: "blocked" },
+]
 
-            if (isAssigned) {
-                return row.original.reviewer
-            }
+const typeOptions = [
+    { label: "Wholesale", value: "wholesale" },
+    { label: "Retail", value: "retail" },
+    { label: "Cash", value: "cash" },
+]
 
-            return (
-                <>
-                    <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-                        Reviewer
-                    </Label>
-                    <Select>
-                        <SelectTrigger
-                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                            size="sm"
-                            id={`${row.original.id}-reviewer`}
-                        >
-                            <SelectValue placeholder="Assign reviewer" />
-                        </SelectTrigger>
-                        <SelectContent align="end">
-                            <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-                            <SelectItem value="Jamik Tashpulatov">
-                                Jamik Tashpulatov
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </>
-            )
-        },
-    },
-    {
-        id: "actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-                        size="icon"
-                    >
-                        <EllipsisVertical />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Make a copy</DropdownMenuItem>
-                    <DropdownMenuItem>Favorite</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        ),
-    },
+const balanceOptions = [
+    { label: "No Dues", value: "noDues" },
+    { label: "Low Dues", value: "lowDues" },
+    { label: "High Dues", value: "highDues" },
 ]
 
 export function CustomersTable({
     data: initialData,
-}: {
-    data: z.infer<typeof schema>[]
-}) {
-    const [data, setData] = React.useState(() => initialData)
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    carpenters,
+}: customerTableProps) {
+    const [data, setData] = useState(() => initialData)
+    const [rowSelection, setRowSelection] = useState({})
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
     )
-    const [pagination, setPagination] = React.useState({
+    const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10,
     })
 
+    // filters
+    const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
+    const [balanceFilter, setBalanceFilter] = React.useState<string[]>([]);
+    const [typeFilter, setTypeFilter] = React.useState<string[]>([]);
+    const [searchFilter, setSearchFilter] = useState("");
+
+    const getBalanceCategory = (balance: number): CustomerBalance => {
+        if (balance === 0) return "noDues"
+        if (balance <= 10000) return "lowDues"
+        return "highDues"
+    }
+
+    const filteredCustomers = React.useMemo(() => {
+        return data.filter((customer) => {
+            // 🔍 Search filter
+            const matchesSearch =
+                !searchFilter ||
+                customer.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
+                customer.contact.includes(searchFilter)
+
+            // 📊 Status filter
+            const matchesStatus =
+                statusFilter.length === 0 || statusFilter.includes(customer.status)
+
+            // 🏷 Type filter
+            const matchesType =
+                typeFilter.length === 0 || typeFilter.includes(customer.type)
+
+            // 💰 Balance filter
+            const balanceCategory = getBalanceCategory(customer.balance)
+            const matchesBalance =
+                balanceFilter.length === 0 || balanceFilter.includes(balanceCategory)
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesType &&
+                matchesBalance
+            )
+        })
+    }, [data, searchFilter, statusFilter, typeFilter, balanceFilter])
+
+    const resetFilters = () => {
+        setStatusFilter([]);
+        setBalanceFilter([]);
+        setTypeFilter([]);
+        setSearchFilter("");
+
+        setSorting([])                 // 🔁 reset sorting
+        setColumnFilters([])          // 🔁 reset column filters
+        setColumnVisibility({})       // 🔁 reset column visibility (default all visible)
+        setRowSelection({})           // 🔁 clear selection
+        setPagination({
+            pageIndex: 0,
+            pageSize: 10, // or your default
+        })
+    }
+
+    const columns: ColumnDef<customerTableType>[] = [
+        {
+            accessorKey: "select",
+            id: "select",
+            header: ({ table }) => (
+                <div className="flex items-center justify-center">
+                    <Checkbox
+                        checked={
+                            table.getIsAllPageRowsSelected() ||
+                            (table.getIsSomePageRowsSelected() && "indeterminate")
+                        }
+                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                        aria-label="Select all"
+                    />
+                </div>
+            ),
+            cell: ({ row }) => (
+                <div className="flex items-center justify-center">
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => row.toggleSelected(!!value)}
+                        aria-label="Select row"
+                    />
+                </div>
+            ),
+            enableSorting: false,
+            enableHiding: true,
+        },
+        {
+            accessorKey: "id",
+            header: "ID",
+            cell: ({ row }) => {
+                return <div>
+                    {row.original.id}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "name",
+            header: ({ column }) => (
+                <div className="flex items-center">
+                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        <span>Name</span>
+                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
+                    </Button>
+
+                </div>
+            ),
+            cell: ({ row }) => {
+                return <TableCellViewer item={row.original} />
+            },
+            enableHiding: false,
+            enableSorting: true,
+        },
+        {
+            accessorKey: "contact",
+            header: "Contact",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    <Link href={`tel:+91${row.original.contact}`} className="hover:underline">
+                        {row.original.contact}
+                    </Link>
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "type",
+            header: "Type",
+            cell: ({ row }) => {
+                const type = customerTypeConfig[row.original.type as CustomerType];
+
+                return (
+                    <Badge variant="outline" className="px-1.5 text-muted-foreground flex items-center gap-1">
+                        <type.icon className={type.className} />
+                        {type.label}
+                    </Badge>
+                )
+            },
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: ({ row }) => {
+                const status = customerStatusConfig[row.original.status as CustomerStatus];
+
+                return (
+                    <Badge variant="outline" className="px-1.5 text-muted-foreground flex items-center gap-1">
+                        <status.icon className={status.className} />
+                        {status.label}
+                    </Badge>
+                )
+            },
+        },
+        {
+            accessorKey: "balance",
+            header: ({ column }) => (
+                <div className="">
+                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        <span>Balance</span>
+                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
+                    </Button>
+
+                </div>
+            ),
+            cell: ({ row }) => {
+                return <div className="">
+                    {formatCurrency(row.original.balance)}
+                </div>
+            },
+            enableHiding: false,
+            enableSorting: true,
+        },
+        {
+            accessorKey: "limit",
+            header: "Limit",
+            cell: ({ row }) => (
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
+                            loading: `Saving ${row.original.name}`,
+                            success: "Done",
+                            error: "Error",
+                        })
+                    }}
+                >
+                    <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
+                        Limit
+                    </Label>
+                    <Input
+                        className="h-8 w-24 border-transparent bg-transparent shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30 px-1 text-start"
+                        defaultValue={row.original.creditLimit ? formatCurrency(row.original.creditLimit) : "-"}
+                        id={`${row.original.id}-limit`}
+                    />
+                </form>
+            ),
+        },
+        {
+            accessorKey: "carpenter",
+            header: "Carpenter",
+            cell: ({ row }) => {
+                const worker = row.original.assignedTo || "";
+                const isAssigned = worker.length > 0;
+
+                if (isAssigned) {
+                    return worker;
+                }
+
+                return (
+                    <>
+                        <Label htmlFor={`${row.original.id}-worker`} className="sr-only">
+                            Carpenter
+                        </Label>
+                        <Select
+                            onValueChange={() => {
+                                toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
+                                    loading: `Saving ${row.original.name}`,
+                                    success: "Done",
+                                    error: "Error",
+                                })
+                            }}
+                        >
+                            <SelectTrigger
+                                className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                                size="sm"
+                                id={`${row.original.id}-worker`}
+                            >
+                                <SelectValue placeholder="Assign carpenter" />
+                            </SelectTrigger>
+                            <SelectContent align="end">
+                                {carpenters.map((carp) => (
+                                    <SelectItem value={carp.id} key={carp.id}>{carp.name}</SelectItem>
+                                )
+                                )}
+                            </SelectContent>
+                        </Select>
+                    </>
+                )
+            },
+        }
+    ]
+
     const table = useReactTable({
-        data,
+        data: filteredCustomers,
         columns,
         state: {
+            sorting,
             columnVisibility,
             rowSelection,
             columnFilters,
             pagination,
         },
-        // getRowId: (row) => row.id.toString(),
         enableRowSelection: true,
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
         onRowSelectionChange: setRowSelection,
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
@@ -293,7 +397,6 @@ export function CustomersTable({
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
@@ -301,7 +404,7 @@ export function CustomersTable({
     return (
         <Tabs
             defaultValue="outline"
-            className="w-full flex-col justify-start gap-6"
+            className="w-full flex-col justify-start gap-4"
         >
             {/* View */}
             <div className="flex items-center justify-between">
@@ -343,6 +446,31 @@ export function CustomersTable({
                         <RotateCw />
                         <span className="hidden lg:inline">Refresh Data</span>
                     </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                <Download />
+                                <span className="hidden md:inline">Export</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem>
+                                    <FileText />
+                                    Export as CSV
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <FileText />
+                                    Export as Excel
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    <FileText />
+                                    Export as JSON
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
@@ -356,17 +484,17 @@ export function CustomersTable({
                         </span>
                         <span className="@[540px]/card:hidden">Filter customers</span>
                     </CardDescription>
-                    <CardAction className="space-x-2">
+                    <CardAction className="space-x-2 flex">
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="sm">
                                     <Columns2 />
-                                    <span className="hidden lg:inline">Customize Columns</span>
-                                    <span className="lg:hidden">Columns</span>
+                                    <span >View</span>
                                     <ChevronDown />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuContent align="end" className="w-40">
                                 {table
                                     .getAllColumns()
                                     .filter(
@@ -390,81 +518,148 @@ export function CustomersTable({
                                     })}
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant="outline" size="sm">
+
+                        <Button variant="outline" size="sm" onClick={() => resetFilters()}>
                             <Funnel />
                             <span className="hidden lg:inline">Reset Filters</span>
                         </Button>
+
+                        {Object.keys(rowSelection).length != 0 &&
+                            <Dialog>
+                                <form>
+                                    <DialogTrigger asChild>
+                                        <Button variant="destructive" size="sm" disabled={Object.keys(rowSelection).length === 0}>
+                                            <Archive />
+                                            <span className="hidden md:flex">Suspend</span>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-sm">
+                                        <DialogHeader>
+                                            <DialogTitle>Archive Customer</DialogTitle>
+                                            <DialogDescription>
+                                                Make changes to your profile here. Click save when you&apos;re
+                                                done.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <FieldGroup>
+                                            <Field>
+                                                <Label htmlFor="name-1">Name</Label>
+                                                <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+                                            </Field>
+                                            <Field>
+                                                <Label htmlFor="username-1">Username</Label>
+                                                <Input id="username-1" name="username" defaultValue="@peduarte" />
+                                            </Field>
+                                        </FieldGroup>
+                                        <DialogFooter>
+                                            <DialogClose asChild>
+                                                <Button variant="outline">Cancel</Button>
+                                            </DialogClose>
+                                            <Button type="submit">Save changes</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </form>
+                            </Dialog>
+                        }
                     </CardAction>
                 </CardHeader>
 
-                <CardContent className="px-1 flex-1 overflow-y-auto grid grid-cols-2 gap-8 md:gap-4">
-                    <div className="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            {/* Balance */}
-                            <Field className="gap-2">
-                                <FieldLabel htmlFor="form-login-email">
-                                    Email*
-                                </FieldLabel>
-                                <Input
-                                    id="form-login-email"
-                                    placeholder="Enter your Email Address"
-                                    autoComplete="email"
-                                    type="email"
-                                />
-                            </Field>
-                        </div>
-
-                        {/* Status */}
-                        <div>
-                            <Field className="gap-2">
-                                <FieldLabel htmlFor="form-login-email">
-                                    Email*
-                                </FieldLabel>
-                                <Input
-                                    id="form-login-email"
-                                    placeholder="Enter your Email Address"
-                                    autoComplete="email"
-                                    type="email"
-                                />
-                            </Field>
-                        </div>
-
-                        {/* Type */}
-                        <div className="col-span-full lg:col-span-1">
-                            <Field className="gap-2">
-                                <FieldLabel htmlFor="form-login-email">
-                                    Email*
-                                </FieldLabel>
-                                <Input
-                                    id="form-login-email"
-                                    placeholder="Enter your Email Address"
-                                    autoComplete="email"
-                                    type="email"
-                                />
-                            </Field>
-                        </div>
+                <CardContent className="px-1 flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-5 gap-2 md:gap-4 py-1">
+                    <div className="col-span-full lg:col-span-1">
+                        <SeacrhInput value={searchFilter} setValue={setSearchFilter} />
                     </div>
-                    <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <SeacrhInput />
-                        <div className="space-x-2 flex justify-start sm:justify-end">
 
-                            {/* Dropdown */}
-                            <Button variant="outline" size="sm">
-                                <Funnel className="hidden md:inline" />
-                                <span >Export</span>
-                            </Button>
+                    <div className="col-span-full lg:col-span-2 space-x-2">
 
+                        <MultiSelectDropdown
+                            name={"Status"}
+                            options={statusOptions}
+                            selected={statusFilter}
+                            setSelected={setStatusFilter}
+                        />
+                        <MultiSelectDropdown
+                            name={"Type"}
+                            options={typeOptions}
+                            selected={typeFilter}
+                            setSelected={setTypeFilter}
+                        />
+                        <MultiSelectDropdown
+                            name={"Balance"}
+                            options={balanceOptions}
+                            selected={balanceFilter}
+                            setSelected={setBalanceFilter}
+                        />
 
-                            <Button variant="outline" size="sm">
-                                <Funnel className="hidden md:inline" />
-                                <span >Reset Filters</span>
-                            </Button>
+                    </div>
 
-
-                            <Button variant="outline" size="sm">
-                                <Funnel className="hidden md:inline" />
-                                <span >Reset Filters</span>
-                            </Button>
+                    <div className="-col-end-1 col-span-2 justify-self-end hidden lg:flex">
+                        <div className="flex w-full items-center gap-4">
+                            <div className="hidden items-center gap-2 lg:flex">
+                                <Select
+                                    value={`${table.getState().pagination.pageSize}`}
+                                    onValueChange={(value) => {
+                                        table.setPageSize(Number(value))
+                                    }}
+                                >
+                                    <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                                        <SelectValue
+                                            placeholder={table.getState().pagination.pageSize}
+                                        />
+                                    </SelectTrigger>
+                                    <SelectContent side="top">
+                                        {[10, 20, 30, 40, 50].map((pageSize) => (
+                                            <SelectItem key={pageSize} value={`${pageSize}`}>
+                                                {pageSize}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex w-fit items-center justify-center text-sm font-medium">
+                                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                                {table.getPageCount()}
+                            </div>
+                            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+                                <Button
+                                    variant="outline"
+                                    className="hidden h-8 w-8 p-0 lg:flex"
+                                    onClick={() => table.setPageIndex(0)}
+                                    disabled={!table.getCanPreviousPage()}
+                                >
+                                    <span className="sr-only">Go to first page</span>
+                                    <ChevronsLeft />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="size-8"
+                                    size="icon"
+                                    onClick={() => table.previousPage()}
+                                    disabled={!table.getCanPreviousPage()}
+                                >
+                                    <span className="sr-only">Go to previous page</span>
+                                    <ChevronLeft />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="size-8"
+                                    size="icon"
+                                    onClick={() => table.nextPage()}
+                                    disabled={!table.getCanNextPage()}
+                                >
+                                    <span className="sr-only">Go to next page</span>
+                                    <ChevronRight />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="hidden size-8 lg:flex"
+                                    size="icon"
+                                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                                    disabled={!table.getCanNextPage()}
+                                >
+                                    <span className="sr-only">Go to last page</span>
+                                    <ChevronsRight />
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
@@ -534,7 +729,7 @@ export function CustomersTable({
                         {table.getFilteredSelectedRowModel().rows.length} of{" "}
                         {table.getFilteredRowModel().rows.length} row(s) selected.
                     </div>
-                    <div className="flex w-full items-center gap-8 lg:w-fit">
+                    <div className="flex w-full items-center gap-8 lg:w-fit lg:hidden">
                         <div className="hidden items-center gap-2 lg:flex">
                             <Label htmlFor="rows-per-page" className="text-sm font-medium">
                                 Rows per page
@@ -660,29 +855,7 @@ export function CustomersTable({
     )
 }
 
-// const chartData = [
-//     { month: "January", desktop: 186, mobile: 80 },
-//     { month: "February", desktop: 305, mobile: 200 },
-//     { month: "March", desktop: 237, mobile: 120 },
-//     { month: "April", desktop: 73, mobile: 190 },
-//     { month: "May", desktop: 209, mobile: 130 },
-//     { month: "June", desktop: 214, mobile: 140 },
-// ]
-
-// const chartConfig = {
-//     desktop: {
-//         label: "Desktop",
-//         color: "var(--primary)",
-//     },
-//     mobile: {
-//         label: "Mobile",
-//         color: "var(--primary)",
-//     },
-// } satisfies ChartConfig
-
-
-
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: customerTableType }) {
     function useResponsiveDirection() {
         const [direction, setDirection] = React.useState<"right" | "bottom">("right")
 
@@ -707,150 +880,121 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     return (
         <Drawer direction={direction}>
             <DrawerTrigger asChild>
-                <Button variant="link" className="w-fit px-0 text-left text-foreground">
-                    {item.header}
+                <Button variant="link" className="w-fit px-0 text-left">
+                    {item.name}
                 </Button>
             </DrawerTrigger>
+
             <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.header}</DrawerTitle>
+                <DrawerHeader>
+                    <DrawerTitle>{item.name}</DrawerTitle>
                     <DrawerDescription>
-                        Showing total visitors for the last 6 months
+                        Customer details overview
                     </DrawerDescription>
                 </DrawerHeader>
-                <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
 
-                    {/* <ChartContainer config={chartConfig}>
-                        <AreaChart
-                            accessibilityLayer
-                            data={chartData}
-                            margin={{
-                                left: 0,
-                                right: 10,
-                            }}
-                        >
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                                hide
-                            />
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent indicator="dot" />}
-                            />
-                            <Area
-                                dataKey="mobile"
-                                type="natural"
-                                fill="var(--color-mobile)"
-                                fillOpacity={0.6}
-                                stroke="var(--color-mobile)"
-                                stackId="a"
-                            />
-                            <Area
-                                dataKey="desktop"
-                                type="natural"
-                                fill="var(--color-desktop)"
-                                fillOpacity={0.4}
-                                stroke="var(--color-desktop)"
-                                stackId="a"
-                            />
-                        </AreaChart>
-                    </ChartContainer>
-                    <Separator />
-                    <div className="grid gap-2">
-                        <div className="flex gap-2 leading-none font-medium">
-                            Trending up by 5.2% this month{" "}
-                            <TrendingUp className="size-4" />
-                        </div>
-                        <div className="text-muted-foreground">
-                            Showing total visitors for the last 6 months. This is just
-                            some random text to test the layout. It spans multiple lines
-                            and should wrap around.
-                        </div>
-                    </div> */}
+                <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
                     <Separator />
 
                     <form className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-3">
-                            <Label htmlFor="header">Header</Label>
-                            <Input id="header" defaultValue={item.header} />
-                        </div>
+
+                        {/* Basic Info */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="type">Type</Label>
-                                <Select defaultValue={item.type}>
-                                    <SelectTrigger id="type" className="w-full">
-                                        <SelectValue placeholder="Select a type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Table of Contents">
-                                            Table of Contents
-                                        </SelectItem>
-                                        <SelectItem value="Executive Summary">
-                                            Executive Summary
-                                        </SelectItem>
-                                        <SelectItem value="Technical Approach">
-                                            Technical Approach
-                                        </SelectItem>
-                                        <SelectItem value="Design">Design</SelectItem>
-                                        <SelectItem value="Capabilities">Capabilities</SelectItem>
-                                        <SelectItem value="Focus Documents">
-                                            Focus Documents
-                                        </SelectItem>
-                                        <SelectItem value="Narrative">Narrative</SelectItem>
-                                        <SelectItem value="Cover Page">Cover Page</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label>Name</Label>
+                                <Input value={item.name} disabled />
                             </div>
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="status">Status</Label>
-                                <Select defaultValue={item.status}>
-                                    <SelectTrigger id="status" className="w-full">
-                                        <SelectValue placeholder="Select a status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Done">Done</SelectItem>
-                                        <SelectItem value="In Progress">In Progress</SelectItem>
-                                        <SelectItem value="Not Started">Not Started</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label>Contact</Label>
+                                <Input value={item.contact} disabled />
                             </div>
                         </div>
+
+                        <div className="flex flex-col gap-3">
+                            <Label>Email</Label>
+                            <Input value={item.email ?? "-"} disabled />
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            <Label>Address</Label>
+                            <Input value={item.address} disabled />
+                        </div>
+
+                        {/* Type & Status */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="target">Target</Label>
-                                <Input id="target" defaultValue={item.target} />
+                                <Label>Type</Label>
+                                <Input value={item.type} disabled />
                             </div>
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="limit">Limit</Label>
-                                <Input id="limit" defaultValue={item.limit} />
+                                <Label>Status</Label>
+                                <Input value={item.status} disabled />
                             </div>
                         </div>
-                        <div className="flex flex-col gap-3">
-                            <Label htmlFor="reviewer">Reviewer</Label>
-                            <Select defaultValue={item.reviewer}>
-                                <SelectTrigger id="reviewer" className="w-full">
-                                    <SelectValue placeholder="Select a reviewer" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-                                    <SelectItem value="Jamik Tashpulatov">
-                                        Jamik Tashpulatov
-                                    </SelectItem>
-                                    <SelectItem value="Emily Whalen">Emily Whalen</SelectItem>
-                                </SelectContent>
-                            </Select>
+
+                        {/* Financials */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-3">
+                                <Label>Balance</Label>
+                                <Input value={item.balance} disabled />
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Label>Credit Limit</Label>
+                                <Input value={item.creditLimit ?? "-"} disabled />
+                            </div>
                         </div>
+
+                        {/* Orders */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-3">
+                                <Label>Total Orders</Label>
+                                <Input value={item.totalOrders ?? "-"} disabled />
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Label>Total Spent</Label>
+                                <Input value={item.totalSpent ?? "-"} disabled />
+                            </div>
+                        </div>
+
+                        {/* Dates */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-3">
+                                <Label>Last Order</Label>
+                                <Input value={item.lastOrderDate ?? "-"} disabled />
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Label>Last Payment</Label>
+                                <Input value={item.lastPaymentDate ?? "-"} disabled />
+                            </div>
+                        </div>
+
+                        {/* Assignment */}
+                        <div className="flex flex-col gap-3">
+                            <Label>Assigned To</Label>
+                            <Input value={item.assignedTo ?? "-"} disabled />
+                        </div>
+
+                        {/* Metadata */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-3">
+                                <Label>Created At</Label>
+                                <Input value={item.createdAt ?? "-"} disabled />
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Label>Updated At</Label>
+                                <Input value={item.updatedAt ?? "-"} disabled />
+                            </div>
+                        </div>
+
                     </form>
                 </div>
+
                 <DrawerFooter>
-                    <Button>Submit</Button>
+                    <Link href={`/customers/${item.id}`}>
+                        <Button variant="default" className="w-full">Get more Details</Button>
+                    </Link>
                     <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
+                        <Button variant="outline">Close</Button>
                     </DrawerClose>
                 </DrawerFooter>
             </DrawerContent>
@@ -858,8 +1002,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     )
 }
 
-function SeacrhInput() {
-    const [value, setValue] = useState('')
+function SeacrhInput({ value, setValue }: { value: string, setValue: React.Dispatch<React.SetStateAction<string>> }) {
     const [isLoading, setIsLoading] = useState(false)
 
     const id = useId()
@@ -879,7 +1022,7 @@ function SeacrhInput() {
     }, [value])
 
     return (
-        <div className='w-full space-y-2'>
+        <div className='space-y-2'>
             <div className='relative'>
                 <div className='text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50'>
                     <SearchIcon className='size-4' />
@@ -901,5 +1044,71 @@ function SeacrhInput() {
                 )}
             </div>
         </div>
+    )
+}
+
+type MultiSelectDropdownType = {
+    name: string,
+    options: { label: string, value: string }[],
+    selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>
+};
+;
+
+function MultiSelectDropdown({ name, options, selected, setSelected }: MultiSelectDropdownType) {
+    const [open, setOpen] = React.useState(false)
+
+    const toggleValue = (value: string) => {
+        setSelected((prev) =>
+            prev.includes(value)
+                ? prev.filter((v) => v !== value)
+                : [...prev, value]
+        )
+    }
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="border-dashed"
+
+                >
+                    <CirclePlus className="hidden sm:flex" />
+                    <span>
+                        {name}
+                    </span>
+                    {selected.length > 0
+                        &&
+                        <Badge>{selected.length}</Badge>
+                    }
+                </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="w-[200px] p-0" align="start">
+                <Command>
+                    <CommandInput placeholder="Search..." />
+
+                    <CommandEmpty>No results found.</CommandEmpty>
+
+                    <CommandGroup>
+                        {options.map((option) => (
+                            <CommandItem
+                                key={option.value}
+                                onSelect={() => toggleValue(option.value)}
+                                className="flex items-center gap-2"
+                            >
+                                <Checkbox
+                                    checked={selected.includes(option.value)}
+                                    onCheckedChange={() => toggleValue(option.value)}
+                                />
+                                <span>{option.label}</span>
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

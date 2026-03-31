@@ -150,12 +150,8 @@ export type CustomersPageKPIData = {
     trend?: number;
 };
 
-export type CustomersDataType = {
-    kpiData: Record<CustomersPageKPIKey, CustomersPageKPIData>;
-}
-
 export type CustomersKpiLayout = {
-    key: CustomersPageKPIKey,
+    key: string,
     title: string;
     icon: LucideIcon;
     description?: string;
@@ -166,4 +162,43 @@ export type CustomersKPICardProp = {
     title: string;
     value: string | number;
     icon: LucideIcon;
+    className?: string;
+}
+
+export type CustomerType = "wholesale" | "retail" | "cash"
+
+export type CustomerStatus = "active" | "inactive" | "blocked"
+
+export type CustomerBalance = "noDues" | "lowDues" | "highDues"
+
+export type customerTableType = {
+    id: string
+    name: string
+    contact: string
+    email?: string
+    address: string
+    city?: string
+    type: CustomerType
+    status: CustomerStatus
+    balance: number
+    creditLimit?: number
+    totalOrders?: number
+    totalSpent?: number
+    lastOrderDate?: string // ISO date
+    lastPaymentDate?: string // ISO date
+    assignedTo?: string // carpenter
+    createdAt?: string
+    updatedAt?: string
+    tags?: string[]
+}
+
+export type customerPageDataType = {
+    kpiData: Record<CustomersPageKPIKey, CustomersPageKPIData>;
+    tableData: customerTableType[];
+    carpenters: { id: string, name: string }[];
+}
+
+export type customerTableProps = {
+    data: customerTableType[],
+    carpenters: { id: string, name: string }[]
 }

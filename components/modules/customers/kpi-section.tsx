@@ -1,10 +1,8 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { KPI_CARDS_CUSTOMERS_PAGE } from "@/public/data";
-import { CustomersKPICardProp, CustomersPageKPIData, CustomersPageKPIKey } from "@/types/types";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { CustomersKPICardProp, CustomersPageKPIData } from "@/types/types";
 
-export default function CustomersKPISection({ data }: { data: Record<CustomersPageKPIKey, CustomersPageKPIData> }) {
+export default function CustomersKPISection({ data }: { data: Record<string, CustomersPageKPIData> }) {
     return (
         <div className='col-span-full grid gap-4 grid-cols-2 lg:grid-cols-4'>
             {
@@ -21,14 +19,15 @@ export default function CustomersKPISection({ data }: { data: Record<CustomersPa
     )
 }
 
-function KpiCard({
+export function KpiCard({
     title,
     value,
     icon: Icon,
+    className
 }: CustomersKPICardProp) {
 
     return (
-        <Card className="@container/card p-4 gap-2 h-full">
+        <Card className={`@container/card p-4 gap-2 h-full ${className || ""}`}>
             <CardHeader className="p-0">
                 <div className="flex flex-col space-y-1">
                     <CardDescription className="truncate">
