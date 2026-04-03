@@ -171,7 +171,7 @@ export type CustomerStatus = "active" | "inactive" | "blocked"
 
 export type CustomerBalance = "noDues" | "lowDues" | "highDues"
 
-export type customerTableType = {
+export type customerDataType = {
     id: string
     name: string
     contact: string
@@ -187,6 +187,7 @@ export type customerTableType = {
     lastOrderDate?: string // ISO date
     lastPaymentDate?: string // ISO date
     assignedTo?: string // carpenter
+    GSTIN?: string
     createdAt?: string
     updatedAt?: string
     tags?: string[]
@@ -194,11 +195,86 @@ export type customerTableType = {
 
 export type customerPageDataType = {
     kpiData: Record<CustomersPageKPIKey, CustomersPageKPIData>;
-    tableData: customerTableType[];
+    tableData: customerDataType[];
     carpenters: { id: string, name: string }[];
 }
 
 export type customerTableProps = {
-    data: customerTableType[],
+    data: customerDataType[],
     carpenters: { id: string, name: string }[]
 }
+
+export type customerIdInsightsDataType = {
+    invoices: CustomerInsightsInvoiceDataType[],
+    ledger: customerInsightsLedgerDataType[],
+    activity: customerInsightsActivityDataType[],
+    products: CustomerInsightsProductDataType[]
+}
+
+
+export type CustomerInsightsInvoiceDataType = {
+    id: string;
+    date: string;
+    amount: number;
+    recievedAmount: number;
+    status: "pending" | "partiallyPaid" | "paid" | "overdue";
+    dueDate: string;
+    assignedTo?: string;
+}
+
+export type customerInsightsLedgerDataType = {
+    id: string;
+    accountId: string;
+    date: string;
+    createdAt: string;
+    amount: number;
+    direction: "credit" | "debit";
+    referenceId: string;
+    referenceType: "invoice" | "payment" | "adjustment";
+    paymentMethod?: "cash" | "bank";
+    adjustmentType?: "discount" | "return";
+    description: string;
+    note?: string;
+    balance: number;
+    status: "posted";
+}
+
+export type customerInsightsActivityDataType = {
+    id: string;
+    date: string;
+    referenceType: "invoice" | "payment" | "adjustment";
+    title: string;
+    amount: number;
+    direction: "credit" | "debit";
+    status: "posted";
+    referenceId: string;
+    paymentMethod?: "cash" | "bank";
+    adjustmentType?: "discount" | "return";
+}
+
+export type CustomerInsightsProductDataType = {
+    id: string;
+    productId: string;
+    productName: string;
+    date: string;
+    invoiceId: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+    category: string;
+    subCategory: string;
+    company: string;
+};
+
+export type CuntomersLastInvoiceData = {
+    invoiceId: string;
+    products: {
+        id: string;
+        productName: string;
+        company: string;
+        code: string;
+        quantity: number;
+        unit: string;
+        icon: string;
+    }[]
+};

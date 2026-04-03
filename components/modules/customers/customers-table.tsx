@@ -93,7 +93,7 @@ import { useEffect, useId, useState } from 'react'
 import { LoaderCircleIcon, SearchIcon } from 'lucide-react'
 import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
-import { CustomerBalance, CustomerStatus, customerTableProps, customerTableType, CustomerType } from "@/types/types"
+import { CustomerBalance, CustomerStatus, customerTableProps, customerDataType, CustomerType } from "@/types/types"
 import { customerStatusConfig, customerTypeConfig } from "@/public/data"
 
 
@@ -189,7 +189,7 @@ export function CustomersTable({
         })
     }
 
-    const columns: ColumnDef<customerTableType>[] = [
+    const columns: ColumnDef<customerDataType>[] = [
         {
             accessorKey: "select",
             id: "select",
@@ -855,7 +855,7 @@ export function CustomersTable({
     )
 }
 
-function TableCellViewer({ item }: { item: customerTableType }) {
+function TableCellViewer({ item }: { item: customerDataType }) {
     function useResponsiveDirection() {
         const [direction, setDirection] = React.useState<"right" | "bottom">("right")
 
