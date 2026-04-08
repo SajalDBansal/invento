@@ -1,24 +1,19 @@
 import CustomerIdKPISection from "@/components/modules/customers/customer-cards";
 import CustomerDetails from "@/components/modules/customers/customer-details";
 import CustomersInsights from "@/components/modules/customers/customer-insights";
-import PurchaseTrendCard from "@/components/modules/customers/purchase-trend-card";
-import RecentPurchasesCard from "@/components/modules/customers/recent-purchases-card";
+import SalesTrendCard from "@/components/modules/customers/sales-trend-card";
+import RecentSalesCard from "@/components/modules/customers/recent-sales-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CuntomersLastInvoiceData, customerDataType } from "@/types/types";
-import { FileText, IndianRupee, Mail, MapPin, Pencil, Phone, ShoppingCart } from "lucide-react";
+import { CustomerIdPageDataType } from "@/types/types";
+import { FileText, IndianRupee, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
-
-type CustomerIdDataType = {
-    customerData: customerDataType
-    carpenters: { id: string; name: string }[]
-}
 
 export default async function CustomerIDPage({ params }: { params: Promise<{ customerId: string }> }) {
     const { customerId } = await params;
     console.log(customerId);
 
-    const data: CustomerIdDataType = {
+    const data: CustomerIdPageDataType = {
         customerData: {
             id: "c1",
             name: "Rajesh Traders",
@@ -47,84 +42,81 @@ export default async function CustomerIDPage({ params }: { params: Promise<{ cus
             { id: "c4", name: "Vikram Singh" },
             { id: "c5", name: "Ramesh Yadav" },
         ],
+        kpiData: {
+            totalOrders: "48",
+            totalRevenue: "₹3,45,000",
+            outstandingBalance: "₹42,500",
+            lastOrder: "Feb 12, 26",
+            assignedTo: "Rajesh Kumar"
+        },
+        monthlyRevenueChartData: [
+            { month: "Jan", revenue: 4200 },
+            { month: "Feb", revenue: 3800 },
+            { month: "Mar", revenue: 5100 },
+            { month: "Apr", revenue: 4600 },
+            { month: "May", revenue: 5900 },
+            { month: "Jun", revenue: 6300 },
+        ],
+        inventoryAlertData: {
+            invoiceId: "INV-001",
+            products: [
+                {
+                    id: "low-1",
+                    productName: "Adjustable Wrench",
+                    company: "Taparia",
+                    code: "HW-AW-101",
+                    quantity: 5,
+                    unit: "pcs",
+                    icon: "Wrench",
+                },
+                {
+                    id: "low-2",
+                    productName: "Claw Hammer",
+                    company: "Stanley",
+                    code: "HW-CH-202",
+                    quantity: 3,
+                    unit: "pcs",
+                    icon: "Hammer",
+                },
+                {
+                    id: "low-3",
+                    productName: "Electric Drill Machine",
+                    company: "Bosch",
+                    code: "HW-DR-303",
+                    quantity: 2,
+                    unit: "pcs",
+                    icon: "Drill",
+                },
+                {
+                    id: "low-4",
+                    productName: "PVC Pipe (1 inch)",
+                    company: "Supreme",
+                    code: "HW-PVC-404",
+                    quantity: 10,
+                    unit: "pcs",
+                    icon: "Package",
+                },
+                {
+                    id: "low-5",
+                    productName: "Hex Key Set",
+                    company: "Ingco",
+                    code: "HW-HK-505",
+                    quantity: 4,
+                    unit: "pcs",
+                    icon: "Settings",
+                },
+                {
+                    id: "low-6",
+                    productName: "Bearing Set",
+                    company: "SKF",
+                    code: "HW-BR-606",
+                    quantity: 6,
+                    unit: "pcs",
+                    icon: "Cog",
+                },
+            ]
+        }
     };
-
-    const kpiData = {
-        totalOrders: "48",
-        totalRevenue: "₹3,45,000",
-        outstandingBalance: "₹42,500",
-        lastOrder: "Feb 12, 26",
-        assignedTo: "Rajesh Kumar"
-    }
-
-    const monthlyRevenueChartData = [
-        { month: "Jan", revenue: 4200 },
-        { month: "Feb", revenue: 3800 },
-        { month: "Mar", revenue: 5100 },
-        { month: "Apr", revenue: 4600 },
-        { month: "May", revenue: 5900 },
-        { month: "Jun", revenue: 6300 },
-    ];
-
-    const inventoryAlertData: CuntomersLastInvoiceData = {
-        invoiceId: "INV-001",
-        products: [
-            {
-                id: "low-1",
-                productName: "Adjustable Wrench",
-                company: "Taparia",
-                code: "HW-AW-101",
-                quantity: 5,
-                unit: "pcs",
-                icon: "Wrench",
-            },
-            {
-                id: "low-2",
-                productName: "Claw Hammer",
-                company: "Stanley",
-                code: "HW-CH-202",
-                quantity: 3,
-                unit: "pcs",
-                icon: "Hammer",
-            },
-            {
-                id: "low-3",
-                productName: "Electric Drill Machine",
-                company: "Bosch",
-                code: "HW-DR-303",
-                quantity: 2,
-                unit: "pcs",
-                icon: "Drill",
-            },
-            {
-                id: "low-4",
-                productName: "PVC Pipe (1 inch)",
-                company: "Supreme",
-                code: "HW-PVC-404",
-                quantity: 10,
-                unit: "pcs",
-                icon: "Package",
-            },
-            {
-                id: "low-5",
-                productName: "Hex Key Set",
-                company: "Ingco",
-                code: "HW-HK-505",
-                quantity: 4,
-                unit: "pcs",
-                icon: "Settings",
-            },
-            {
-                id: "low-6",
-                productName: "Bearing Set",
-                company: "SKF",
-                code: "HW-BR-606",
-                quantity: 6,
-                unit: "pcs",
-                icon: "Cog",
-            },
-        ]
-    }
 
     return (
         <div className="space-y-6 min-h-screen flex flex-col">
@@ -185,7 +177,7 @@ export default async function CustomerIDPage({ params }: { params: Promise<{ cus
 
             {/* Replacable */}
             <div className='space-y-4'>
-                <CustomerIdKPISection data={kpiData} />
+                <CustomerIdKPISection data={data.kpiData} />
 
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 flex-1">
                     <div className="w-full col-span-full lg:col-span-3 flex flex-col gap-4 h-full">
@@ -196,10 +188,10 @@ export default async function CustomerIDPage({ params }: { params: Promise<{ cus
                     </div>
                     <div className="col-span-full lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                         {/* purchase trends */}
-                        <PurchaseTrendCard monthlyData={monthlyRevenueChartData} />
+                        <SalesTrendCard monthlyData={data.monthlyRevenueChartData} />
 
                         {/* recently purchased */}
-                        <RecentPurchasesCard data={inventoryAlertData} />
+                        <RecentSalesCard data={data.inventoryAlertData} />
 
                     </div>
 

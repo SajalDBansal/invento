@@ -93,10 +93,10 @@ import { useEffect, useId, useState } from 'react'
 import { LoaderCircleIcon, SearchIcon } from 'lucide-react'
 import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
-import { CustomerBalance, CustomerStatus, customerTableProps, customerDataType, CustomerType } from "@/types/types"
+import { CustomerBalance, CustomerStatus, customerTableProps, supplierDataType, CustomerType } from "@/types/types"
 import { customerStatusConfig, customerTypeConfig } from "@/public/data"
 
-const customersData: customerDataType[] = [
+const suppliersData: supplierDataType[] = [
     {
         id: "c1",
         name: "Rajesh Traders",
@@ -105,13 +105,12 @@ const customersData: customerDataType[] = [
         address: "Delhi",
         type: "wholesale",
         status: "active",
-        balance: 12000,
+        payableBalance: 12000,
         creditLimit: 50000,
         totalOrders: 45,
-        totalSpent: 250000,
+        totalPurchased: 250000,
         lastOrderDate: "2026-03-20",
         lastPaymentDate: "2026-03-22",
-        assignedTo: "Rajesh Kumar",
         createdAt: "2025-12-01",
         updatedAt: "2026-03-22",
         tags: ["vip", "bulk"],
@@ -123,12 +122,11 @@ const customersData: customerDataType[] = [
         address: "Mumbai",
         type: "retail",
         status: "active",
-        balance: 3000,
+        payableBalance: 3000,
         totalOrders: 20,
-        totalSpent: 80000,
+        totalPurchased: 80000,
         lastOrderDate: "2026-03-18",
         lastPaymentDate: "2026-03-19",
-        assignedTo: "Amit Sharma",
     },
     {
         id: "c3",
@@ -137,12 +135,11 @@ const customersData: customerDataType[] = [
         address: "Ahmedabad",
         type: "wholesale",
         status: "inactive",
-        balance: 15000,
+        payableBalance: 15000,
         creditLimit: 40000,
         totalOrders: 30,
-        totalSpent: 180000,
+        totalPurchased: 180000,
         lastOrderDate: "2026-02-10",
-        assignedTo: "Suresh Patel",
     },
     {
         id: "c4",
@@ -151,11 +148,10 @@ const customersData: customerDataType[] = [
         address: "Jaipur",
         type: "retail",
         status: "blocked",
-        balance: 25000,
+        payableBalance: 25000,
         totalOrders: 12,
-        totalSpent: 60000,
+        totalPurchased: 60000,
         lastOrderDate: "2026-01-15",
-        assignedTo: "Vikram Singh",
     },
     {
         id: "c5",
@@ -164,12 +160,11 @@ const customersData: customerDataType[] = [
         address: "Lucknow",
         type: "cash",
         status: "active",
-        balance: 0,
+        payableBalance: 0,
         totalOrders: 10,
-        totalSpent: 30000,
+        totalPurchased: 30000,
         lastOrderDate: "2026-03-25",
         lastPaymentDate: "2026-03-25",
-        assignedTo: "Ramesh Yadav",
     },
     {
         id: "c6",
@@ -178,9 +173,9 @@ const customersData: customerDataType[] = [
         address: "Pune",
         type: "retail",
         status: "active",
-        balance: 5000,
+        payableBalance: 5000,
         totalOrders: 22,
-        totalSpent: 95000,
+        totalPurchased: 95000,
         lastOrderDate: "2026-03-10",
     },
     {
@@ -190,10 +185,10 @@ const customersData: customerDataType[] = [
         address: "Bangalore",
         type: "wholesale",
         status: "active",
-        balance: 20000,
+        payableBalance: 20000,
         creditLimit: 60000,
         totalOrders: 55,
-        totalSpent: 320000,
+        totalPurchased: 320000,
         lastOrderDate: "2026-03-21",
     },
     {
@@ -203,9 +198,9 @@ const customersData: customerDataType[] = [
         address: "Chennai",
         type: "cash",
         status: "inactive",
-        balance: 0,
+        payableBalance: 0,
         totalOrders: 8,
-        totalSpent: 20000,
+        totalPurchased: 20000,
         lastOrderDate: "2026-01-30",
     },
     {
@@ -215,9 +210,9 @@ const customersData: customerDataType[] = [
         address: "Hyderabad",
         type: "retail",
         status: "active",
-        balance: 7000,
+        payableBalance: 7000,
         totalOrders: 18,
-        totalSpent: 70000,
+        totalPurchased: 70000,
         lastOrderDate: "2026-03-14",
     },
     {
@@ -227,9 +222,9 @@ const customersData: customerDataType[] = [
         address: "Kolkata",
         type: "wholesale",
         status: "blocked",
-        balance: 18000,
+        payableBalance: 18000,
         totalOrders: 28,
-        totalSpent: 140000,
+        totalPurchased: 140000,
         lastOrderDate: "2026-02-05",
     },
     {
@@ -239,9 +234,9 @@ const customersData: customerDataType[] = [
         address: "Surat",
         type: "retail",
         status: "active",
-        balance: 2500,
+        payableBalance: 2500,
         totalOrders: 14,
-        totalSpent: 45000,
+        totalPurchased: 45000,
         lastOrderDate: "2026-03-11",
     },
     {
@@ -251,9 +246,9 @@ const customersData: customerDataType[] = [
         address: "Indore",
         type: "wholesale",
         status: "inactive",
-        balance: 22000,
+        payableBalance: 22000,
         totalOrders: 35,
-        totalSpent: 210000,
+        totalPurchased: 210000,
         lastOrderDate: "2026-01-20",
     },
     {
@@ -263,9 +258,9 @@ const customersData: customerDataType[] = [
         address: "Bhopal",
         type: "cash",
         status: "active",
-        balance: 0,
+        payableBalance: 0,
         totalOrders: 9,
-        totalSpent: 15000,
+        totalPurchased: 15000,
         lastOrderDate: "2026-03-26",
     },
     {
@@ -275,9 +270,9 @@ const customersData: customerDataType[] = [
         address: "Nagpur",
         type: "retail",
         status: "blocked",
-        balance: 12000,
+        payableBalance: 12000,
         totalOrders: 16,
-        totalSpent: 60000,
+        totalPurchased: 60000,
         lastOrderDate: "2026-02-12",
     },
     {
@@ -287,21 +282,13 @@ const customersData: customerDataType[] = [
         address: "Chandigarh",
         type: "wholesale",
         status: "active",
-        balance: 30000,
+        payableBalance: 30000,
         creditLimit: 70000,
         totalOrders: 60,
-        totalSpent: 400000,
+        totalPurchased: 400000,
         lastOrderDate: "2026-03-23",
     },
-]
-
-const carpentersData = [
-    { id: "c1", name: "Rajesh Kumar" },
-    { id: "c2", name: "Amit Sharma" },
-    { id: "c3", name: "Suresh Patel" },
-    { id: "c4", name: "Vikram Singh" },
-    { id: "c5", name: "Ramesh Yadav" },
-]
+];
 
 const statusOptions = [
     { label: "Active", value: "active" },
@@ -321,9 +308,8 @@ const balanceOptions = [
     { label: "High Dues", value: "highDues" },
 ]
 
-export function CustomersTable() {
-    const [data, setData] = useState<customerDataType[]>([])
-    const [carpenterData, setCarpenterData] = useState<{ id: string, name: string }[]>([]);
+export function SuppliersTable() {
+    const [data, setData] = useState<supplierDataType[]>([])
     const [rowSelection, setRowSelection] = useState({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -334,12 +320,6 @@ export function CustomersTable() {
         pageIndex: 0,
         pageSize: 10,
     })
-
-    // filters
-    const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-    const [balanceFilter, setBalanceFilter] = React.useState<string[]>([]);
-    const [typeFilter, setTypeFilter] = React.useState<string[]>([]);
-    const [searchFilter, setSearchFilter] = useState("");
 
     function useMediaQuery(query: string) {
         const [matches, setMatches] = React.useState(false)
@@ -359,39 +339,46 @@ export function CustomersTable() {
 
     const isMobile = useMediaQuery("(max-width: 768px)");
 
+    // filters
+    const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
+    const [balanceFilter, setBalanceFilter] = React.useState<string[]>([]);
+    const [typeFilter, setTypeFilter] = React.useState<string[]>([]);
+    const [searchFilter, setSearchFilter] = useState("");
+
+    React.useEffect(() => {
+        setLoading(true);
+        const timer = setTimeout(() => {
+            setData(suppliersData);
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const mobileVisibility = {
         id: false,
         select: false,
+        company: false,
+        gstin: false,
         type: false,
-        status: false,
         limit: false,
-        carpenter: false
+        lastPayment: false
     }
 
     const desktopVisibility = {
         id: true,
         select: true,
+        company: true,
+        gstin: true,
         type: true,
-        status: true,
         limit: true,
-        carpenter: true
+        lastPayment: true
     }
 
     React.useEffect(() => {
 
         setColumnVisibility(isMobile ? mobileVisibility : desktopVisibility)
     }, [isMobile])
-
-    React.useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            setData(customersData);
-            setCarpenterData(carpenterData);
-            setLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     const getBalanceCategory = (balance: number): CustomerBalance => {
         if (balance === 0) return "noDues"
@@ -416,7 +403,7 @@ export function CustomersTable() {
                 typeFilter.length === 0 || typeFilter.includes(customer.type)
 
             // 💰 Balance filter
-            const balanceCategory = getBalanceCategory(customer.balance)
+            const balanceCategory = getBalanceCategory(customer.payableBalance)
             const matchesBalance =
                 balanceFilter.length === 0 || balanceFilter.includes(balanceCategory)
 
@@ -445,8 +432,7 @@ export function CustomersTable() {
         })
     }
 
-
-    const columns: ColumnDef<customerDataType>[] = [
+    const columns: ColumnDef<supplierDataType>[] = [
         {
             accessorKey: "select",
             id: "select",
@@ -516,6 +502,26 @@ export function CustomersTable() {
             enableHiding: true,
         },
         {
+            accessorKey: "company",
+            header: "Company",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.company ? row.original.company : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "gstin",
+            header: "GSTIN",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.GSTIN ? row.original.GSTIN : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
             accessorKey: "type",
             header: "Type",
             cell: ({ row }) => {
@@ -525,20 +531,6 @@ export function CustomersTable() {
                     <Badge variant="outline" className="px-1.5 text-muted-foreground flex items-center gap-1">
                         <type.icon className={type.className} />
                         {type.label}
-                    </Badge>
-                )
-            },
-        },
-        {
-            accessorKey: "status",
-            header: "Status",
-            cell: ({ row }) => {
-                const status = customerStatusConfig[row.original.status as CustomerStatus];
-
-                return (
-                    <Badge variant="outline" className="px-1.5 text-muted-foreground flex items-center gap-1">
-                        <status.icon className={status.className} />
-                        {status.label}
                     </Badge>
                 )
             },
@@ -558,7 +550,7 @@ export function CustomersTable() {
             ),
             cell: ({ row }) => {
                 return <div className="">
-                    {formatCurrency(row.original.balance)}
+                    {formatCurrency(row.original.payableBalance)}
                 </div>
             },
             enableHiding: false,
@@ -590,48 +582,26 @@ export function CustomersTable() {
             ),
         },
         {
-            accessorKey: "carpenter",
-            header: "Carpenter",
+            accessorKey: "lastPayment",
+            header: ({ column }) => (
+                <div className="">
+                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        <span>Last Pay Date</span>
+                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
+                    </Button>
+
+                </div>
+            ),
             cell: ({ row }) => {
-                const worker = row.original.assignedTo || "";
-                const isAssigned = worker.length > 0;
-
-                if (isAssigned) {
-                    return worker;
-                }
-
-                return (
-                    <>
-                        <Label htmlFor={`${row.original.id}-worker`} className="sr-only">
-                            Carpenter
-                        </Label>
-                        <Select
-                            onValueChange={() => {
-                                toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-                                    loading: `Saving ${row.original.name}`,
-                                    success: "Done",
-                                    error: "Error",
-                                })
-                            }}
-                        >
-                            <SelectTrigger
-                                className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                                size="sm"
-                                id={`${row.original.id}-worker`}
-                            >
-                                <SelectValue placeholder="Assign carpenter" />
-                            </SelectTrigger>
-                            <SelectContent align="end">
-                                {carpentersData.map((carp) => (
-                                    <SelectItem value={carp.id} key={carp.id}>{carp.name}</SelectItem>
-                                )
-                                )}
-                            </SelectContent>
-                        </Select>
-                    </>
-                )
+                return <div className="">
+                    {row.original.lastPaymentDate ? row.original.lastPaymentDate : "-"}
+                </div>
             },
-        }
+            enableHiding: false,
+            enableSorting: true,
+        },
     ]
 
     const table = useReactTable({
@@ -1121,8 +1091,7 @@ export function CustomersTable() {
     )
 }
 
-function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile: boolean }) {
-
+function TableCellViewer({ item, isMobile }: { item: supplierDataType, isMobile: boolean }) {
     return (
         <Drawer direction={isMobile ? "bottom" : "right"}>
             <DrawerTrigger asChild>
@@ -1166,6 +1135,18 @@ function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile:
                             <Input value={item.address} disabled />
                         </div>
 
+                        {/* Company & GSTIN */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-3">
+                                <Label>Company</Label>
+                                <Input value={item.company ? item.company : "-"} disabled />
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Label>GSTIN</Label>
+                                <Input value={item.GSTIN ? item.GSTIN : "-"} disabled />
+                            </div>
+                        </div>
+
                         {/* Type & Status */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
@@ -1182,11 +1163,11 @@ function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile:
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
                                 <Label>Balance</Label>
-                                <Input value={item.balance} disabled />
+                                <Input value={formatCurrency(item.payableBalance)} disabled />
                             </div>
                             <div className="flex flex-col gap-3">
                                 <Label>Credit Limit</Label>
-                                <Input value={item.creditLimit ?? "-"} disabled />
+                                <Input value={item.creditLimit ? formatCurrency(item.creditLimit) : "-"} disabled />
                             </div>
                         </div>
 
@@ -1197,8 +1178,8 @@ function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile:
                                 <Input value={item.totalOrders ?? "-"} disabled />
                             </div>
                             <div className="flex flex-col gap-3">
-                                <Label>Total Spent</Label>
-                                <Input value={item.totalSpent ?? "-"} disabled />
+                                <Label>Total Purchased</Label>
+                                <Input value={item.totalPurchased ? formatCurrency(item.totalPurchased) : "-"} disabled />
                             </div>
                         </div>
 
@@ -1212,12 +1193,6 @@ function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile:
                                 <Label>Last Payment</Label>
                                 <Input value={item.lastPaymentDate ?? "-"} disabled />
                             </div>
-                        </div>
-
-                        {/* Assignment */}
-                        <div className="flex flex-col gap-3">
-                            <Label>Assigned To</Label>
-                            <Input value={item.assignedTo ?? "-"} disabled />
                         </div>
 
                         {/* Metadata */}
@@ -1236,7 +1211,7 @@ function TableCellViewer({ item, isMobile }: { item: customerDataType, isMobile:
                 </div>
 
                 <DrawerFooter>
-                    <Link href={`/customers/${item.id}`}>
+                    <Link href={`/suppliers/${item.id}`}>
                         <Button variant="default" className="w-full">Get more Details</Button>
                     </Link>
                     <DrawerClose asChild>

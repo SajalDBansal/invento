@@ -37,12 +37,122 @@ import {
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, OctagonAlert, ChevronsUpDown, RotateCw } from "lucide-react"
 import { useState } from 'react'
 import { cn, formatCurrency } from "@/lib/utils"
-import { customerInsightsActivityDataType } from "@/types/types"
+import { ContactsActivityDataType } from "@/types/types"
 import { useRouter } from "next/navigation"
 
-export function CustomersActivityTable({ activityData, searchFilter }: { activityData: customerInsightsActivityDataType[], searchFilter: string }) {
+const activitiesData: ContactsActivityDataType[] = [
+    {
+        id: "10",
+        date: "2024-06-10",
+        referenceType: "payment",
+        title: "Final payment received",
+        amount: 150,
+        direction: "credit",
+        status: "posted",
+        referenceId: "PAY-005",
+        paymentMethod: "bank",
+    },
+    {
+        id: "9",
+        date: "2024-06-09",
+        referenceType: "payment",
+        title: "Payment received",
+        amount: 100,
+        direction: "credit",
+        status: "posted",
+        referenceId: "PAY-004",
+        paymentMethod: "cash",
+    },
+    {
+        id: "8",
+        date: "2024-06-08",
+        referenceType: "adjustment",
+        title: "Discount applied",
+        amount: 50,
+        direction: "credit",
+        status: "posted",
+        referenceId: "ADJ-001",
+        adjustmentType: "discount",
+    },
+    {
+        id: "7",
+        date: "2024-06-07",
+        referenceType: "invoice",
+        title: "Invoice generated",
+        amount: 300,
+        direction: "debit",
+        status: "posted",
+        referenceId: "INV-004",
+    },
+    {
+        id: "6",
+        date: "2024-06-06",
+        referenceType: "payment",
+        title: "Full payment received",
+        amount: 450,
+        direction: "credit",
+        status: "posted",
+        referenceId: "PAY-003",
+        paymentMethod: "bank",
+    },
+    {
+        id: "5",
+        date: "2024-06-05",
+        referenceType: "invoice",
+        title: "Invoice generated",
+        amount: 150,
+        direction: "debit",
+        status: "posted",
+        referenceId: "INV-003",
+    },
+    {
+        id: "4",
+        date: "2024-06-04",
+        referenceType: "payment",
+        title: "Partial payment received",
+        amount: 100,
+        direction: "credit",
+        status: "posted",
+        referenceId: "PAY-002",
+        paymentMethod: "bank",
+    },
+    {
+        id: "3",
+        date: "2024-06-03",
+        referenceType: "invoice",
+        title: "Invoice generated",
+        amount: 200,
+        direction: "debit",
+        status: "posted",
+        referenceId: "INV-002",
+    },
+    {
+        id: "2",
+        date: "2024-06-02",
+        referenceType: "payment",
+        title: "Payment received",
+        amount: 300,
+        direction: "credit",
+        status: "posted",
+        referenceId: "PAY-001",
+        paymentMethod: "cash",
+    },
+    {
+        id: "1",
+        date: "2024-06-01",
+        referenceType: "invoice",
+        title: "Invoice generated",
+        amount: 500,
+        direction: "debit",
+        status: "posted",
+        referenceId: "INV-001",
+    },
+]
+
+export function ActivityTable({ searchFilter }: { searchFilter: string }) {
     const router = useRouter();
-    const [data, setData] = useState(() => activityData)
+    const [data, setData] = useState<ContactsActivityDataType[]>([])
+    const [filteredData, setFilteredData] = useState<ContactsActivityDataType[]>([])
     const [rowSelection, setRowSelection] = useState({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -53,6 +163,17 @@ export function CustomersActivityTable({ activityData, searchFilter }: { activit
         pageIndex: 0,
         pageSize: 10,
     })
+
+    React.useEffect(() => {
+        setLoading(true);
+        const timer = setTimeout(() => {
+            setData(activitiesData);
+            setFilteredData(activitiesData);
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     function useMediaQuery(query: string) {
         const [matches, setMatches] = React.useState(false)
@@ -89,10 +210,10 @@ export function CustomersActivityTable({ activityData, searchFilter }: { activit
     }, [isMobile])
 
     React.useEffect(() => {
-        let filteredData = activityData;
+        setFilteredData(data);
         if (searchFilter) {
             const lowercasedFilter = searchFilter.toLowerCase();
-            filteredData = activityData.filter(item =>
+            setFilteredData(() => filteredData.filter(item =>
                 item.id.toLowerCase().includes(lowercasedFilter) ||
                 item.date.toLowerCase().includes(lowercasedFilter) ||
                 item.referenceType.toLowerCase().includes(lowercasedFilter) ||
@@ -100,23 +221,15 @@ export function CustomersActivityTable({ activityData, searchFilter }: { activit
                 item.direction.toLowerCase().includes(lowercasedFilter) ||
                 item.referenceId.toLowerCase().includes(lowercasedFilter) ||
                 item.status.toLowerCase().includes(lowercasedFilter)
-            );
+            ))
         }
-        setData(filteredData);
     }, [searchFilter]);
 
     const [loading, setLoading] = useState(false);
 
-    React.useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
 
-        return () => clearTimeout(timer);
-    }, []);
 
-    const columns: ColumnDef<customerInsightsActivityDataType>[] = [
+    const columns: ColumnDef<ContactsActivityDataType>[] = [
         {
             accessorKey: "date",
             header: ({ column }) => (
@@ -216,7 +329,7 @@ export function CustomersActivityTable({ activityData, searchFilter }: { activit
     ]
 
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         state: {
             sorting,

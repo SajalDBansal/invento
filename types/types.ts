@@ -145,12 +145,13 @@ export type CustomersPageKPIKey =
     | "totalReceivable"
     | "highRiskCustomers";
 
-export type CustomersPageKPIData = {
-    value: string;
-    trend?: number;
-};
+export type SuppliersPageKPIKey = "totalSuppliers" | "activeSuppliers" | "totalPayable" | "overdueSuppliers";
 
-export type CustomersKpiLayout = {
+export type CustomersPageKPIData = Record<CustomersPageKPIKey, { value: string, trend?: number }>
+
+export type suppliersPageKPIData = Record<SuppliersPageKPIKey, { value: string, trend?: number }>
+
+export type ContactsKpiLayout = {
     key: string,
     title: string;
     icon: LucideIcon;
@@ -158,7 +159,7 @@ export type CustomersKpiLayout = {
     trendLabel?: string;
 };
 
-export type CustomersKPICardProp = {
+export type ContactsKPICardProp = {
     title: string;
     value: string | number;
     icon: LucideIcon;
@@ -193,10 +194,57 @@ export type customerDataType = {
     tags?: string[]
 }
 
-export type customerPageDataType = {
-    kpiData: Record<CustomersPageKPIKey, CustomersPageKPIData>;
-    tableData: customerDataType[];
-    carpenters: { id: string, name: string }[];
+export type CustomerIdPageDataType = {
+    customerData: customerDataType
+    carpenters: { id: string; name: string }[],
+    kpiData: {
+        totalOrders: string;
+        totalRevenue: string;
+        outstandingBalance: string;
+        lastOrder: string;
+        assignedTo: string;
+    },
+    monthlyRevenueChartData: {
+        month: string;
+        revenue: number;
+    }[],
+    inventoryAlertData: ContactsLastInvoiceData
+}
+
+export type SupplierType = "wholesale" | "retail" | "cash"
+
+export type SupplierStatus = "active" | "inactive" | "blocked"
+
+export type supplierDataType = {
+    id: string
+    name: string
+    contact: string
+    email?: string
+    address: string
+    city?: string
+    company?: string
+    type: SupplierType
+    status: SupplierStatus
+    payableBalance: number
+    creditLimit?: number
+    totalOrders?: number
+    totalPurchased?: number
+    lastOrderDate?: string
+    lastPaymentDate?: string
+    GSTIN?: string
+    createdAt?: string
+    updatedAt?: string
+    tags?: string[]
+};
+
+export type SupplierIdPageDataType = {
+    supplierData: supplierDataType
+    kpiData: Record<string, string>,
+    monthlyRevenueChartData: {
+        month: string;
+        revenue: number;
+    }[],
+    inventoryAlertData: ContactsLastInvoiceData
 }
 
 export type customerTableProps = {
@@ -205,14 +253,14 @@ export type customerTableProps = {
 }
 
 export type customerIdInsightsDataType = {
-    invoices: CustomerInsightsInvoiceDataType[],
-    ledger: customerInsightsLedgerDataType[],
-    activity: customerInsightsActivityDataType[],
-    products: CustomerInsightsProductDataType[]
+    invoices: ContactsInvoiceDataType[],
+    ledger: ContactsLedgerDataType[],
+    activity: ContactsActivityDataType[],
+    products: ContactsProductDataType[]
 }
 
 
-export type CustomerInsightsInvoiceDataType = {
+export type ContactsInvoiceDataType = {
     id: string;
     date: string;
     amount: number;
@@ -222,7 +270,7 @@ export type CustomerInsightsInvoiceDataType = {
     assignedTo?: string;
 }
 
-export type customerInsightsLedgerDataType = {
+export type ContactsLedgerDataType = {
     id: string;
     accountId: string;
     date: string;
@@ -239,7 +287,7 @@ export type customerInsightsLedgerDataType = {
     status: "posted";
 }
 
-export type customerInsightsActivityDataType = {
+export type ContactsActivityDataType = {
     id: string;
     date: string;
     referenceType: "invoice" | "payment" | "adjustment";
@@ -252,7 +300,7 @@ export type customerInsightsActivityDataType = {
     adjustmentType?: "discount" | "return";
 }
 
-export type CustomerInsightsProductDataType = {
+export type ContactsProductDataType = {
     id: string;
     productId: string;
     productName: string;
@@ -266,7 +314,7 @@ export type CustomerInsightsProductDataType = {
     company: string;
 };
 
-export type CuntomersLastInvoiceData = {
+export type ContactsLastInvoiceData = {
     invoiceId: string;
     products: {
         id: string;

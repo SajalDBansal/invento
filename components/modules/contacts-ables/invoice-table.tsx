@@ -37,12 +37,146 @@ import {
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, OctagonAlert, ChevronsUpDown, RotateCw } from "lucide-react"
 import { useState } from 'react'
 import { cn, formatCurrency } from "@/lib/utils"
-import { CustomerInsightsProductDataType } from "@/types/types"
+import Link from "next/link"
+import { ContactsInvoiceDataType } from "@/types/types"
 import { useRouter } from "next/navigation"
 
-export function CustomersProductsTable({ productData, searchFilter }: { productData: CustomerInsightsProductDataType[], searchFilter: string }) {
+
+const invoicesData: ContactsInvoiceDataType[] = [
+    {
+        id: "INV-001",
+        date: "2024-06-01",
+        amount: 100,
+        recievedAmount: 100,
+        status: "paid",
+        dueDate: "2024-06-15",
+        assignedTo: "John Doe",
+    },
+    {
+        id: "INV-002",
+        date: "2024-06-02",
+        amount: 250,
+        recievedAmount: 0,
+        status: "pending",
+        dueDate: "2024-06-16",
+    },
+    {
+        id: "INV-003",
+        date: "2024-06-03",
+        amount: 175,
+        recievedAmount: 0,
+        status: "overdue",
+        dueDate: "2024-06-17",
+        assignedTo: "Jane Smith",
+    },
+    {
+        id: "INV-004",
+        date: "2024-06-04",
+        amount: 300,
+        recievedAmount: 300,
+        status: "paid",
+        dueDate: "2024-06-18",
+    },
+    {
+        id: "INV-005",
+        date: "2024-06-05",
+        amount: 120,
+        recievedAmount: 0,
+        status: "pending",
+        dueDate: "2024-06-19",
+        assignedTo: "Alice Brown",
+    },
+    {
+        id: "INV-006",
+        date: "2024-06-06",
+        amount: 90,
+        recievedAmount: 90,
+        status: "paid",
+        dueDate: "2024-06-20",
+    },
+    {
+        id: "INV-007",
+        date: "2024-06-07",
+        amount: 450,
+        recievedAmount: 0,
+        status: "overdue",
+        dueDate: "2024-06-21",
+        assignedTo: "Michael Lee",
+    },
+    {
+        id: "INV-008",
+        date: "2024-06-08",
+        amount: 220,
+        recievedAmount: 0,
+        status: "pending",
+        dueDate: "2024-06-22",
+    },
+    {
+        id: "INV-009",
+        date: "2024-06-09",
+        amount: 310,
+        recievedAmount: 310,
+        status: "paid",
+        dueDate: "2024-06-23",
+        assignedTo: "Chris Evans",
+    },
+    {
+        id: "INV-010",
+        date: "2024-06-10",
+        amount: 180,
+        recievedAmount: 0,
+        status: "overdue",
+        dueDate: "2024-06-24",
+    },
+    {
+        id: "INV-011",
+        date: "2024-06-11",
+        amount: 275,
+        recievedAmount: 0,
+        status: "pending",
+        dueDate: "2024-06-25",
+        assignedTo: "Emma Watson",
+    },
+    {
+        id: "INV-012",
+        date: "2024-06-12",
+        amount: 130,
+        recievedAmount: 130,
+        status: "paid",
+        dueDate: "2024-06-26",
+    },
+    {
+        id: "INV-013",
+        date: "2024-06-13",
+        amount: 360,
+        recievedAmount: 0,
+        status: "overdue",
+        dueDate: "2024-06-27",
+        assignedTo: "David Miller",
+    },
+    {
+        id: "INV-014",
+        date: "2024-06-14",
+        amount: 210,
+        recievedAmount: 0,
+        status: "pending",
+        dueDate: "2024-06-28",
+    },
+    {
+        id: "INV-015",
+        date: "2024-06-15",
+        amount: 500,
+        recievedAmount: 500,
+        status: "paid",
+        dueDate: "2024-06-29",
+        assignedTo: "Sophia Taylor",
+    },
+]
+
+export function InvoiceTable({ searchFilter }: { searchFilter: string }) {
     const router = useRouter();
-    const [data, setData] = useState(() => productData)
+    const [data, setData] = useState<ContactsInvoiceDataType[]>([]);
+    const [filteredData, setFilteredData] = useState<ContactsInvoiceDataType[]>([]);
     const [rowSelection, setRowSelection] = useState({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -53,6 +187,17 @@ export function CustomersProductsTable({ productData, searchFilter }: { productD
         pageIndex: 0,
         pageSize: 10,
     })
+
+    React.useEffect(() => {
+        setLoading(true);
+        const timer = setTimeout(() => {
+            setData(invoicesData);
+            setFilteredData(invoicesData);
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     function useMediaQuery(query: string) {
         const [matches, setMatches] = React.useState(false)
@@ -73,99 +218,48 @@ export function CustomersProductsTable({ productData, searchFilter }: { productD
     const isMobile = useMediaQuery("(max-width: 768px)")
 
     const mobileVisibility = {
-        id: false,
-        company: false,
-        category: false,
-        date: false,
-        invoiceId: false
+        assignedTo: false,
+        dueDate: false,
+        status: false
     }
 
     const desktopVisibility = {
-        id: true,
-        company: true,
-        category: true,
-        date: true,
-        invoiceId: true
+        assignedTo: true,
+        dueDate: true,
+        status: true
     }
 
     React.useEffect(() => {
-
         setColumnVisibility(isMobile ? mobileVisibility : desktopVisibility)
     }, [isMobile])
 
     React.useEffect(() => {
-        let filteredData = productData;
+        setFilteredData(data);
         if (searchFilter) {
             const lowercasedFilter = searchFilter.toLowerCase();
-            filteredData = productData.filter(item =>
-                item.id.toLowerCase().includes(lowercasedFilter) ||
-                item.date.toLowerCase().includes(lowercasedFilter) ||
-                item.productId.toLowerCase().includes(lowercasedFilter) ||
-                item.productName.toLowerCase().includes(lowercasedFilter) ||
-                item.invoiceId.toLowerCase().includes(lowercasedFilter) ||
-                item.category.toLowerCase().includes(lowercasedFilter) ||
-                item.subCategory.toLowerCase().includes(lowercasedFilter) ||
-                item.company.toString().toLowerCase().includes(lowercasedFilter)
-            );
+            setFilteredData(() =>
+                data.filter(item =>
+                    item.id.toLowerCase().includes(lowercasedFilter) ||
+                    item.amount.toString().toLowerCase().includes(lowercasedFilter) ||
+                    item.status.toLowerCase().includes(lowercasedFilter) ||
+                    item.dueDate.toLowerCase().includes(lowercasedFilter) ||
+                    item.date.toLowerCase().includes(lowercasedFilter) ||
+                    item.assignedTo?.toLowerCase().includes(lowercasedFilter)
+                ))
         }
-        setData(filteredData);
     }, [searchFilter]);
 
     const [loading, setLoading] = useState(false);
 
-    React.useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    const columns: ColumnDef<CustomerInsightsProductDataType>[] = [
+    const columns: ColumnDef<ContactsInvoiceDataType>[] = [
         {
             accessorKey: "id",
             header: "ID",
             cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.productId ? row.original.productId : "-"}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "name",
-            header: "Name",
-            cell: ({ row }) => {
                 return <div>
-                    {row.original.productName ? row.original.productName : "-"}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "company",
-            header: "Company",
-            cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.company ? row.original.company : "-"}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "category",
-            header: "Category",
-            cell: ({ row }) => {
-                return <div className="flex items-center gap-1 ">
-                    <Badge variant={"outline"}
-                        className="px-1.5 flex items-center gap-1">
-                        {row.original.category}
-                    </Badge>
-                    <Badge variant={"outline"}
-                        className="px-1.5 hidden md:flex items-center gap-1">
-                        {row.original.subCategory}
-                    </Badge>
+                    <Link href={`/invoices/${row.original.id}`} className=" hover:underline">
+                        {row.original.id}
+                    </Link>
                 </div>
             },
             enableHiding: true,
@@ -184,60 +278,90 @@ export function CustomersProductsTable({ productData, searchFilter }: { productD
                 </div>
             ),
             cell: ({ row }) => {
+                return <div>{row.original.date}</div>
+            },
+            enableHiding: false,
+            enableSorting: true,
+        },
+        {
+            accessorKey: "amount",
+            header: "Amount",
+            cell: ({ row }) => {
                 return <div className="text-muted-foreground">
-                    {row.original.date.slice(2)}
+                    {row.original.amount ? formatCurrency(row.original.amount) : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "received",
+            header: "Received",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.recievedAmount ? formatCurrency(row.original.recievedAmount) : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "status",
+            header: ({ column }) => (
+                <div className="">
+                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        <span>Status</span>
+                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
+                    </Button>
+
+                </div>
+            ),
+            cell: ({ row }) => {
+                return (
+                    <Badge variant={row.original.status === "overdue" ? "destructive" : "outline"}
+                        className={cn(`px-1.5 flex items-center gap-1`,
+                            row.original.status === "paid" && "bg-green-400/10 text-green-400",
+                            row.original.status === "pending" && "bg-yellow-400/10 text-yellow-400",
+                            row.original.status === "partiallyPaid" && "bg-orange-400/10 text-orange-400",
+                        )}>
+                        {row.original.status}
+                    </Badge>
+                )
+            },
+        },
+        {
+            accessorKey: "dueDate",
+            header: ({ column }) => (
+                <div className="">
+                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        <span>Due Date</span>
+                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
+                    </Button>
+
+                </div>
+            ),
+            cell: ({ row }) => {
+                return <div className="">
+                    {row.original.dueDate}
                 </div>
             },
             enableHiding: false,
             enableSorting: true,
         },
         {
-            accessorKey: "invoiceId",
-            header: "InvoiceId",
+            accessorKey: "assignedTo",
+            header: "Assigned To",
             cell: ({ row }) => {
-                return <div className="flex items-center gap-1 ">
-                    <Badge variant={"outline"}
-                        className="px-1.5 flex items-center gap-1">
-                        {row.original.invoiceId}
-                    </Badge>
-                </div>
+                return <div>{row.original.assignedTo || "-"}</div>
             },
             enableHiding: true,
-        },
-        {
-            accessorKey: "quantity",
-            header: "Qty.",
-            cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.quantity}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "price",
-            header: "Price",
-            cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.unitPrice}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "amount",
-            header: "Total",
-            cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.totalPrice}
-                </div>
-            },
-            enableHiding: true,
-        },
+        }
     ]
 
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         state: {
             sorting,
@@ -260,13 +384,10 @@ export function CustomersProductsTable({ productData, searchFilter }: { productD
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    const openInvoicePage = (activityId: string) => {
+    const openInvoicePage = (invoiceId: string) => {
         // Implement navigation to invoice details page
-        console.log("");
-
-        router.push(`/products/${activityId}`)
-
-
+        console.log(`Navigate to invoice details page for invoice ID: ${invoiceId}`);
+        router.push(`/sales/invoices/${invoiceId}`);
     }
 
     return (
@@ -309,7 +430,7 @@ export function CustomersProductsTable({ productData, searchFilter }: { productD
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
-                                        onClick={() => openInvoicePage(row.original.productId)}
+                                        onClick={() => openInvoicePage(row.original.id)}
                                         className="cursor-pointer"
                                     >
                                         {row.getVisibleCells().map((cell) => (

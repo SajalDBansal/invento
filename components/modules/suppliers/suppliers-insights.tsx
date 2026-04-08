@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, FileText, LoaderCircleIcon, SearchIcon } from "lucide-react"
 import { useEffect, useId, useState } from "react"
+import { ActivityTable } from "../contacts-ables/activity-table";
 import { InvoiceTable } from "../contacts-ables/invoice-table";
 import { LedgerTable } from "../contacts-ables/ledger-table";
-import { ActivityTable } from "../contacts-ables/activity-table";
 import { ProductsTable } from "../contacts-ables/products-table";
 
 type TabValue = "invoices" | "ledger" | "activity" | "products";
 
-export default function CustomersInsights() {
+export default function SuppliersInsights() {
     const [activeTab, setActiveTab] = useState<TabValue>("invoices");
     const [searchFilter, setSearchFilter] = useState("");
 

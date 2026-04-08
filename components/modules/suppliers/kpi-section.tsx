@@ -1,16 +1,16 @@
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { KPI_CARDS_CUSTOMERS_PAGE } from "@/public/data";
-import { ContactsKPICardProp, CustomersPageKPIData, CustomersPageKPIKey } from "@/types/types";
+import { KPI_CARDS_SUPPLIERS_PAGE } from "@/public/data";
+import { ContactsKPICardProp, suppliersPageKPIData, SuppliersPageKPIKey } from "@/types/types";
 
-export default function CustomersKPISection({ data }: { data: CustomersPageKPIData }) {
+export default function SuppliersKPISection({ data }: { data: suppliersPageKPIData }) {
     return (
         <div className='col-span-full grid gap-4 grid-cols-2 lg:grid-cols-4'>
             {
-                KPI_CARDS_CUSTOMERS_PAGE.map((card, index) => (
+                KPI_CARDS_SUPPLIERS_PAGE.map((card, index) => (
                     <KpiCard
                         key={index}
                         title={card.title}
-                        value={data[card.key as CustomersPageKPIKey].value}
+                        value={data[card.key as SuppliersPageKPIKey].value}
                         icon={card.icon}
                     />
                 ))

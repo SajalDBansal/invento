@@ -37,14 +37,155 @@ import {
 } from "@/components/ui/table"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, OctagonAlert, ChevronsUpDown, RotateCw } from "lucide-react"
 import { useState } from 'react'
-import { cn, formatCurrency } from "@/lib/utils"
-import Link from "next/link"
-import { customerInsightsLedgerDataType } from "@/types/types"
+import { formatCurrency } from "@/lib/utils"
+import { ContactsLedgerDataType } from "@/types/types"
 import { useRouter } from "next/navigation"
 
-export function CustomersLedgerTable({ ledgerData, searchFilter }: { ledgerData: customerInsightsLedgerDataType[], searchFilter: string }) {
+const ledgerData: ContactsLedgerDataType[] = [
+    {
+        id: "1",
+        accountId: "user-123",
+        date: "2024-06-01",
+        createdAt: "2024-06-01T10:00:00Z",
+        amount: 500,
+        direction: "debit",
+        referenceId: "INV-001",
+        referenceType: "invoice",
+        description: "Invoice generated",
+        balance: 500,
+        status: "posted",
+    },
+    {
+        id: "2",
+        accountId: "user-123",
+        date: "2024-06-02",
+        createdAt: "2024-06-02T12:30:00Z",
+        amount: 300,
+        direction: "credit",
+        referenceId: "PAY-001",
+        referenceType: "payment",
+        description: "Payment received",
+        paymentMethod: "cash",
+        balance: 200,
+        status: "posted",
+    },
+    {
+        id: "3",
+        accountId: "user-123",
+        date: "2024-06-03",
+        createdAt: "2024-06-03T09:15:00Z",
+        amount: 200,
+        direction: "debit",
+        referenceId: "INV-002",
+        referenceType: "invoice",
+        description: "Invoice generated",
+        balance: 400,
+        status: "posted",
+    },
+    {
+        id: "4",
+        accountId: "user-123",
+        date: "2024-06-04",
+        createdAt: "2024-06-04T11:45:00Z",
+        amount: 100,
+        direction: "credit",
+        referenceId: "PAY-002",
+        referenceType: "payment",
+        description: "Partial payment received",
+        paymentMethod: "bank",
+        balance: 300,
+        status: "posted",
+    },
+    {
+        id: "5",
+        accountId: "user-123",
+        date: "2024-06-05",
+        createdAt: "2024-06-05T14:10:00Z",
+        amount: 150,
+        direction: "debit",
+        referenceId: "INV-003",
+        referenceType: "invoice",
+        description: "Invoice generated",
+        balance: 450,
+        status: "posted",
+    },
+    {
+        id: "6",
+        accountId: "user-123",
+        date: "2024-06-06",
+        createdAt: "2024-06-06T16:00:00Z",
+        amount: 450,
+        direction: "credit",
+        referenceId: "PAY-003",
+        referenceType: "payment",
+        description: "Full payment received",
+        paymentMethod: "bank",
+        balance: 0,
+        status: "posted",
+    },
+    {
+        id: "7",
+        accountId: "user-123",
+        date: "2024-06-07",
+        createdAt: "2024-06-07T10:20:00Z",
+        amount: 300,
+        direction: "debit",
+        referenceId: "INV-004",
+        referenceType: "invoice",
+        description: "Invoice generated",
+        balance: 300,
+        status: "posted",
+    },
+    {
+        id: "8",
+        accountId: "user-123",
+        date: "2024-06-08",
+        createdAt: "2024-06-08T13:50:00Z",
+        amount: 50,
+        direction: "credit",
+        referenceId: "ADJ-001",
+        referenceType: "adjustment",
+        adjustmentType: "discount", // ✅ added here only
+        description: "Discount applied",
+        note: "Loyalty discount",
+        paymentMethod: "cash",
+        balance: 250,
+        status: "posted",
+    },
+    {
+        id: "9",
+        accountId: "user-123",
+        date: "2024-06-09",
+        createdAt: "2024-06-09T15:30:00Z",
+        amount: 100,
+        direction: "credit",
+        referenceId: "PAY-004",
+        referenceType: "payment",
+        description: "Payment received",
+        paymentMethod: "cash",
+        balance: 150,
+        status: "posted",
+    },
+    {
+        id: "10",
+        accountId: "user-123",
+        date: "2024-06-10",
+        createdAt: "2024-06-10T17:00:00Z",
+        amount: 150,
+        direction: "credit",
+        referenceId: "PAY-005",
+        referenceType: "payment",
+        description: "Final payment received",
+        paymentMethod: "bank",
+        balance: 0,
+        status: "posted",
+    },
+]
+
+export function LedgerTable({ searchFilter }: { searchFilter: string }) {
     const router = useRouter();
-    const [data, setData] = useState(() => ledgerData)
+    const [data, setData] = useState<ContactsLedgerDataType[]>([])
+    const [filteredData, setFilteredData] = useState<ContactsLedgerDataType[]>([]);
     const [rowSelection, setRowSelection] = useState({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -55,6 +196,17 @@ export function CustomersLedgerTable({ ledgerData, searchFilter }: { ledgerData:
         pageIndex: 0,
         pageSize: 10,
     })
+
+    React.useEffect(() => {
+        setLoading(true);
+        const timer = setTimeout(() => {
+            setData(ledgerData);
+            setFilteredData(ledgerData);
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     function useMediaQuery(query: string) {
         const [matches, setMatches] = React.useState(false)
@@ -91,32 +243,32 @@ export function CustomersLedgerTable({ ledgerData, searchFilter }: { ledgerData:
     }, [isMobile])
 
     React.useEffect(() => {
-        let filteredData = ledgerData;
+        setFilteredData(data);
         if (searchFilter) {
             const lowercasedFilter = searchFilter.toLowerCase();
-            filteredData = ledgerData.filter(item =>
-                item.id.toLowerCase().includes(lowercasedFilter) ||
-                item.date.toLowerCase().includes(lowercasedFilter) ||
-                item.direction.toLowerCase().includes(lowercasedFilter) ||
-                item.referenceType.toLowerCase().includes(lowercasedFilter) ||
-                item.status.toLowerCase().includes(lowercasedFilter)
-            );
+            setFilteredData(() =>
+                ledgerData.filter(item =>
+                    item.id.toLowerCase().includes(lowercasedFilter) ||
+                    item.date.toLowerCase().includes(lowercasedFilter) ||
+                    item.accountId.toLowerCase().includes(lowercasedFilter) ||
+                    item.amount.toString().toLowerCase().includes(lowercasedFilter) ||
+                    item.referenceType.toLowerCase().includes(lowercasedFilter) ||
+                    item.referenceId.toLowerCase().includes(lowercasedFilter) ||
+                    item.direction.toLowerCase().includes(lowercasedFilter) ||
+                    item.status.toLowerCase().includes(lowercasedFilter) ||
+                    item.balance.toString().toLowerCase().includes(lowercasedFilter) ||
+                    item.paymentMethod?.toLowerCase().includes(lowercasedFilter) ||
+                    item.status.toLowerCase().includes(lowercasedFilter) ||
+                    item.adjustmentType?.toLowerCase().includes(lowercasedFilter) ||
+                    item.description.toLowerCase().includes(lowercasedFilter) ||
+                    item.note?.toLowerCase().includes(lowercasedFilter)
+                ))
         }
-        setData(filteredData);
     }, [searchFilter]);
 
     const [loading, setLoading] = useState(false);
 
-    React.useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    const columns: ColumnDef<customerInsightsLedgerDataType>[] = [
+    const columns: ColumnDef<ContactsLedgerDataType>[] = [
         {
             accessorKey: "date",
             header: ({ column }) => (
@@ -219,7 +371,7 @@ export function CustomersLedgerTable({ ledgerData, searchFilter }: { ledgerData:
     ]
 
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         state: {
             sorting,
@@ -242,7 +394,7 @@ export function CustomersLedgerTable({ ledgerData, searchFilter }: { ledgerData:
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    const openInvoicePage = (row: customerInsightsLedgerDataType) => {
+    const openInvoicePage = (row: ContactsLedgerDataType) => {
         // Implement navigation to invoice details page
         console.log("");
 

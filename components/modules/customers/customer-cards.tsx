@@ -1,8 +1,8 @@
-import { CustomersKpiLayout, CustomersPageKPIData } from "@/types/types";
+import { ContactsKpiLayout, CustomersPageKPIData } from "@/types/types";
 import { KpiCard } from "./kpi-section";
 import { AlertCircle, CalendarDays, IndianRupee, ShoppingCart, User } from "lucide-react";
 
-export const KPI_CARDS_CUSTOMER_ID_PAGE: CustomersKpiLayout[] = [
+export const KPI_CARDS_CUSTOMER_ID_PAGE: ContactsKpiLayout[] = [
     {
         key: "totalOrders",
         title: "Total Orders",

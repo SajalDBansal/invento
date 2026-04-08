@@ -28,31 +28,26 @@ import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { CuntomersLastInvoiceData, InventoryAlertProp } from "@/types/types";
+import { ContactsLastInvoiceData } from "@/types/types";
 import { RenderIcon } from "@/components/render-icon";
 
 
-export default function RecentPurchasesCard({ data }: { data: CuntomersLastInvoiceData }) {
+export default function RecentSalesCard({ data }: { data: ContactsLastInvoiceData }) {
     const [filteredData, setFilteredData] = useState(data.products);
 
     useEffect(() => {
         setFilteredData(data.products);
     }, [data]);
 
-    const onClearButtonClick = (dataId: string) => {
-        setFilteredData((prev) => prev.filter((item) => item.id !== dataId));
-    };
-
     return (
         <Card className="@container/card p-4 gap-2 space-y-2">
             <CardHeader className="p-0">
-                <CardTitle>Recent Purchases</CardTitle>
+                <CardTitle>Recent Sales</CardTitle>
                 <CardDescription>
                     <span className="hidden sm:inline">
-                        An overview of recent purchases made by customers, including product details and purchase dates.
+                        An overview of recent purchase made by customers, including product details and purchase dates.
                     </span>
-                    <span className="sm:hidden">Recent purchases</span>
+                    <span className="sm:hidden">Recent sales</span>
                 </CardDescription>
 
             </CardHeader>

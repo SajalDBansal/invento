@@ -1,4 +1,4 @@
-import { ActivityMetaType, CustomersKpiLayout, CustomerStatus, CustomerType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
+import { ActivityMetaType, ContactsKpiLayout, CustomerStatus, CustomerType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
 
 import {
     BarChart3,
@@ -255,7 +255,7 @@ export const ACTIVITY_META: ActivityMetaType = {
     },
 } as const;
 
-export const KPI_CARDS_CUSTOMERS_PAGE: CustomersKpiLayout[] = [
+export const KPI_CARDS_CUSTOMERS_PAGE: ContactsKpiLayout[] = [
     {
         key: "totalCustomers",
         title: "Total Customers",
@@ -281,6 +281,35 @@ export const KPI_CARDS_CUSTOMERS_PAGE: CustomersKpiLayout[] = [
         title: "High Risk Customers",
         icon: AlertTriangle,
         description: "Customers with overdue or credit risk",
+    },
+];
+
+export const KPI_CARDS_SUPPLIERS_PAGE: ContactsKpiLayout[] = [
+    {
+        key: "totalSuppliers",
+        title: "Total Suppliers",
+        icon: Users,
+        description: "Total registered suppliers",
+    },
+    {
+        key: "activeSuppliers",
+        title: "Active Suppliers",
+        icon: UserCheck,
+        description: "Suppliers with recent activity",
+        trendLabel: "vs last period",
+    },
+    {
+        key: "totalPayable",
+        title: "Total Payables",
+        icon: IndianRupee,
+        description: "Outstanding payments to suppliers",
+        trendLabel: "vs last period",
+    },
+    {
+        key: "overdueSuppliers",
+        title: "Overdue Suppliers",
+        icon: AlertTriangle,
+        description: "Suppliers with overdue payments",
     },
 ];
 

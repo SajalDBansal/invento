@@ -18,7 +18,6 @@ import {
 } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
     Select,
@@ -37,14 +36,146 @@ import {
 } from "@/components/ui/table"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, OctagonAlert, ChevronsUpDown, RotateCw } from "lucide-react"
 import { useState } from 'react'
-import { cn, formatCurrency } from "@/lib/utils"
-import Link from "next/link"
-import { CustomerInsightsInvoiceDataType } from "@/types/types"
+import { ContactsProductDataType } from "@/types/types"
 import { useRouter } from "next/navigation"
 
-export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: CustomerInsightsInvoiceDataType[], searchFilter: string }) {
+const productsData: ContactsProductDataType[] = [
+    {
+        id: "1",
+        productId: "HW-001",
+        productName: "Cement Bag (50kg)",
+        date: "2024-06-01",
+        invoiceId: "INV-001",
+        quantity: 10,
+        unitPrice: 350,
+        totalPrice: 3500,
+        category: "Construction",
+        subCategory: "Cement",
+        company: "UltraTech",
+    },
+    {
+        id: "2",
+        productId: "HW-002",
+        productName: "TMT Steel Rod (12mm)",
+        date: "2024-06-02",
+        invoiceId: "INV-002",
+        quantity: 20,
+        unitPrice: 600,
+        totalPrice: 12000,
+        category: "Construction",
+        subCategory: "Steel",
+        company: "Tata Steel",
+    },
+    {
+        id: "3",
+        productId: "HW-003",
+        productName: "PVC Pipe (1 inch)",
+        date: "2024-06-03",
+        invoiceId: "INV-003",
+        quantity: 15,
+        unitPrice: 120,
+        totalPrice: 1800,
+        category: "Plumbing",
+        subCategory: "Pipes",
+        company: "Astral",
+    },
+    {
+        id: "4",
+        productId: "HW-004",
+        productName: "Wall Putty (20kg)",
+        date: "2024-06-04",
+        invoiceId: "INV-004",
+        quantity: 5,
+        unitPrice: 700,
+        totalPrice: 3500,
+        category: "Construction",
+        subCategory: "Finishing",
+        company: "Birla White",
+    },
+    {
+        id: "5",
+        productId: "HW-005",
+        productName: "Electric Drill Machine",
+        date: "2024-06-05",
+        invoiceId: "INV-005",
+        quantity: 2,
+        unitPrice: 2500,
+        totalPrice: 5000,
+        category: "Tools",
+        subCategory: "Power Tools",
+        company: "Bosch",
+    },
+    {
+        id: "6",
+        productId: "HW-006",
+        productName: "Paint Bucket (20L)",
+        date: "2024-06-06",
+        invoiceId: "INV-006",
+        quantity: 3,
+        unitPrice: 1800,
+        totalPrice: 5400,
+        category: "Paint",
+        subCategory: "Interior Paint",
+        company: "Asian Paints",
+    },
+    {
+        id: "7",
+        productId: "HW-007",
+        productName: "Switch Board (6 Module)",
+        date: "2024-06-07",
+        invoiceId: "INV-007",
+        quantity: 8,
+        unitPrice: 250,
+        totalPrice: 2000,
+        category: "Electrical",
+        subCategory: "Switches",
+        company: "Anchor",
+    },
+    {
+        id: "8",
+        productId: "HW-008",
+        productName: "LED Bulb (12W)",
+        date: "2024-06-08",
+        invoiceId: "INV-008",
+        quantity: 12,
+        unitPrice: 120,
+        totalPrice: 1440,
+        category: "Electrical",
+        subCategory: "Lighting",
+        company: "Philips",
+    },
+    {
+        id: "9",
+        productId: "HW-009",
+        productName: "Ceramic Tiles (2x2 ft)",
+        date: "2024-06-09",
+        invoiceId: "INV-009",
+        quantity: 25,
+        unitPrice: 90,
+        totalPrice: 2250,
+        category: "Construction",
+        subCategory: "Tiles",
+        company: "Kajaria",
+    },
+    {
+        id: "10",
+        productId: "HW-010",
+        productName: "Water Tap (Stainless Steel)",
+        date: "2024-06-10",
+        invoiceId: "INV-010",
+        quantity: 6,
+        unitPrice: 450,
+        totalPrice: 2700,
+        category: "Plumbing",
+        subCategory: "Fittings",
+        company: "Jaquar",
+    },
+]
+
+export function ProductsTable({ searchFilter }: { searchFilter: string }) {
     const router = useRouter();
-    const [data, setData] = useState(() => orderData)
+    const [data, setData] = useState<ContactsProductDataType[]>([])
+    const [filteredData, setFilteredData] = useState<ContactsProductDataType[]>([])
     const [rowSelection, setRowSelection] = useState({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -55,6 +186,17 @@ export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: 
         pageIndex: 0,
         pageSize: 10,
     })
+
+    React.useEffect(() => {
+        setLoading(true);
+        const timer = setTimeout(() => {
+            setData(productsData);
+            setFilteredData(productsData);
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     function useMediaQuery(query: string) {
         const [matches, setMatches] = React.useState(false)
@@ -75,57 +217,90 @@ export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: 
     const isMobile = useMediaQuery("(max-width: 768px)")
 
     const mobileVisibility = {
-        assignedTo: false,
-        dueDate: false,
-        status: false
+        id: false,
+        company: false,
+        category: false,
+        date: false,
+        invoiceId: false
     }
 
     const desktopVisibility = {
-        assignedTo: true,
-        dueDate: true,
-        status: true
+        id: true,
+        company: true,
+        category: true,
+        date: true,
+        invoiceId: true
     }
 
     React.useEffect(() => {
+
         setColumnVisibility(isMobile ? mobileVisibility : desktopVisibility)
     }, [isMobile])
 
     React.useEffect(() => {
-        let filteredData = orderData;
+        setFilteredData(data);
         if (searchFilter) {
             const lowercasedFilter = searchFilter.toLowerCase();
-            filteredData = orderData.filter(item =>
-                item.id.toLowerCase().includes(lowercasedFilter) ||
-                item.amount.toString().toLowerCase().includes(lowercasedFilter) ||
-                item.status.toLowerCase().includes(lowercasedFilter) ||
-                item.dueDate.toLowerCase().includes(lowercasedFilter) ||
-                item.date.toLowerCase().includes(lowercasedFilter) ||
-                item.assignedTo?.toLowerCase().includes(lowercasedFilter)
-            );
+            setFilteredData(() =>
+                filteredData.filter(item =>
+                    item.id.toLowerCase().includes(lowercasedFilter) ||
+                    item.date.toLowerCase().includes(lowercasedFilter) ||
+                    item.productId.toLowerCase().includes(lowercasedFilter) ||
+                    item.productName.toLowerCase().includes(lowercasedFilter) ||
+                    item.invoiceId.toLowerCase().includes(lowercasedFilter) ||
+                    item.category.toLowerCase().includes(lowercasedFilter) ||
+                    item.subCategory.toLowerCase().includes(lowercasedFilter) ||
+                    item.company.toString().toLowerCase().includes(lowercasedFilter)
+                ))
         }
-        setData(filteredData);
     }, [searchFilter]);
 
     const [loading, setLoading] = useState(false);
 
-    React.useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    const columns: ColumnDef<CustomerInsightsInvoiceDataType>[] = [
+    const columns: ColumnDef<ContactsProductDataType>[] = [
         {
             accessorKey: "id",
             header: "ID",
             cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.productId ? row.original.productId : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "name",
+            header: "Name",
+            cell: ({ row }) => {
                 return <div>
-                    <Link href={`/invoices/${row.original.id}`} className=" hover:underline">
-                        {row.original.id}
-                    </Link>
+                    {row.original.productName ? row.original.productName : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "company",
+            header: "Company",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.company ? row.original.company : "-"}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "category",
+            header: "Category",
+            cell: ({ row }) => {
+                return <div className="flex items-center gap-1 ">
+                    <Badge variant={"outline"}
+                        className="px-1.5 flex items-center gap-1">
+                        {row.original.category}
+                    </Badge>
+                    <Badge variant={"outline"}
+                        className="px-1.5 hidden md:flex items-center gap-1">
+                        {row.original.subCategory}
+                    </Badge>
                 </div>
             },
             enableHiding: true,
@@ -144,90 +319,60 @@ export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: 
                 </div>
             ),
             cell: ({ row }) => {
-                return <div>{row.original.date}</div>
+                return <div className="text-muted-foreground">
+                    {row.original.date.slice(2)}
+                </div>
             },
             enableHiding: false,
             enableSorting: true,
+        },
+        {
+            accessorKey: "invoiceId",
+            header: "InvoiceId",
+            cell: ({ row }) => {
+                return <div className="flex items-center gap-1 ">
+                    <Badge variant={"outline"}
+                        className="px-1.5 flex items-center gap-1">
+                        {row.original.invoiceId}
+                    </Badge>
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "quantity",
+            header: "Qty.",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.quantity}
+                </div>
+            },
+            enableHiding: true,
+        },
+        {
+            accessorKey: "price",
+            header: "Price",
+            cell: ({ row }) => {
+                return <div className="text-muted-foreground">
+                    {row.original.unitPrice}
+                </div>
+            },
+            enableHiding: true,
         },
         {
             accessorKey: "amount",
-            header: "Amount",
+            header: "Total",
             cell: ({ row }) => {
                 return <div className="text-muted-foreground">
-                    {row.original.amount ? formatCurrency(row.original.amount) : "-"}
+                    {row.original.totalPrice}
                 </div>
             },
             enableHiding: true,
         },
-        {
-            accessorKey: "received",
-            header: "Received",
-            cell: ({ row }) => {
-                return <div className="text-muted-foreground">
-                    {row.original.recievedAmount ? formatCurrency(row.original.recievedAmount) : "-"}
-                </div>
-            },
-            enableHiding: true,
-        },
-        {
-            accessorKey: "status",
-            header: ({ column }) => (
-                <div className="">
-                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        <span>Status</span>
-                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
-                    </Button>
-
-                </div>
-            ),
-            cell: ({ row }) => {
-                return (
-                    <Badge variant={row.original.status === "overdue" ? "destructive" : "outline"}
-                        className={cn(`px-1.5 flex items-center gap-1`,
-                            row.original.status === "paid" && "bg-green-400/10 text-green-400",
-                            row.original.status === "pending" && "bg-yellow-400/10 text-yellow-400",
-                            row.original.status === "partiallyPaid" && "bg-orange-400/10 text-orange-400",
-                        )}>
-                        {row.original.status}
-                    </Badge>
-                )
-            },
-        },
-        {
-            accessorKey: "dueDate",
-            header: ({ column }) => (
-                <div className="">
-                    <Button variant="ghost" size="sm" className="p-0 mr-2 cursor-pointer justify-start"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        <span>Due Date</span>
-                        <ChevronsUpDown className="ml-2 opacity-50 size-5" />
-                    </Button>
-
-                </div>
-            ),
-            cell: ({ row }) => {
-                return <div className="">
-                    {row.original.dueDate}
-                </div>
-            },
-            enableHiding: false,
-            enableSorting: true,
-        },
-        {
-            accessorKey: "assignedTo",
-            header: "Assigned To",
-            cell: ({ row }) => {
-                return <div>{row.original.assignedTo || "-"}</div>
-            },
-            enableHiding: true,
-        }
     ]
 
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         state: {
             sorting,
@@ -250,10 +395,13 @@ export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: 
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    const openInvoicePage = (invoiceId: string) => {
+    const openInvoicePage = (activityId: string) => {
         // Implement navigation to invoice details page
-        console.log(`Navigate to invoice details page for invoice ID: ${invoiceId}`);
-        router.push(`/sales/invoices/${invoiceId}`);
+        console.log("");
+
+        router.push(`/products/${activityId}`)
+
+
     }
 
     return (
@@ -296,7 +444,7 @@ export function CustomersInvoiceTable({ orderData, searchFilter }: { orderData: 
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
-                                        onClick={() => openInvoicePage(row.original.id)}
+                                        onClick={() => openInvoicePage(row.original.productId)}
                                         className="cursor-pointer"
                                     >
                                         {row.getVisibleCells().map((cell) => (
