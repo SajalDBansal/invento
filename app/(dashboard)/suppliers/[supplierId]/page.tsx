@@ -148,13 +148,13 @@ export default async function SuppliersIDPage({ params }: { params: Promise<{ su
                     </div>
                 </div>
                 <div className="flex justify-start md:justify-end flex-wrap gap-2">
-                    <Link href={"#"}>
+                    <Link href={`/purchases/create?supplier=${data.supplierData.id}`}>
                         <Button>
                             <FileText className="hidden md:flex" />
-                            Generate Order
+                            Create Purchase
                         </Button>
                     </Link>
-                    <Link href={"#"} >
+                    <Link href={`#`} >
                         <Button>
                             <IndianRupee />
                             Request Statement

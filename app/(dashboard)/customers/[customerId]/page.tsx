@@ -153,7 +153,7 @@ export default async function CustomerIDPage({ params }: { params: Promise<{ cus
                     </div>
                 </div>
                 <div className="flex justify-start md:justify-end flex-wrap gap-2">
-                    <Link href={"#"}>
+                    <Link href={`/sales/invoices/create?customer=${data.customerData.id}`}>
                         <Button>
                             <FileText className="hidden md:flex" />
                             Generate Invoice

@@ -12,7 +12,7 @@ export function Provider({
         <SessionProvider>
             <ThemeProvider
                 attribute="class"
-                defaultTheme="dark"
+                defaultTheme="system"
                 enableSystem={false}
                 disableTransitionOnChange
                 storageKey="invento-theme"

@@ -38,7 +38,7 @@ export default function SuppliersPage() {
                     </div>
                 </div>
                 <div className="flex justify-end space-x-2">
-                    <Link href={"#"}>
+                    <Link href={"/suppliers/add"}>
                         <Button>
                             <Plus />
                             Create Supplier

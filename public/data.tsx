@@ -25,8 +25,6 @@ import {
     Ban, Check, Store, X
 } from "lucide-react";
 
-
-
 export const NAVIGATION: NavSection[] = [
     {
         title: "Dashboard",
@@ -195,7 +193,7 @@ export const KPI_CARDS: DashbordKpiLayout[] = [
         icon: IndianRupee,
         description: "Total revenue generated today",
         trendLabel: "from yesterday",
-        link: "/ledger/sales?filter=today",
+        link: "/sales?filter=today",
     },
     {
         key: "todayPurchases",
@@ -203,14 +201,14 @@ export const KPI_CARDS: DashbordKpiLayout[] = [
         icon: ShoppingCart,
         description: "Stock purchased today",
         trendLabel: "from yesterday",
-        link: "/ledger/purchases?filter=today",
+        link: "/purchases?filter=today",
     },
     {
         key: "todayProfit",
         title: "Profit Today",
         icon: TrendingUp,
         description: "Net profit after expenses",
-        link: "/overview/analytics",
+        link: "/dashboard/analytics",
     },
     {
         key: "todayExpenses",
@@ -218,7 +216,7 @@ export const KPI_CARDS: DashbordKpiLayout[] = [
         icon: Wallet,
         description: "Operational expenses",
         trendLabel: "vs yesterday",
-        link: "/management/expenses",
+        link: "/expenses",
     },
     {
         key: "lowStockItems",
@@ -232,7 +230,7 @@ export const KPI_CARDS: DashbordKpiLayout[] = [
         title: "Pending Payments",
         icon: CreditCard,
         description: "Unpaid invoices",
-        link: "/ledger/sales/invoices?filter=pending",
+        link: "/sales/invoices?filter=pending",
     },
 ];
 

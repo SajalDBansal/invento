@@ -175,12 +175,12 @@ export type CustomerBalance = "noDues" | "lowDues" | "highDues"
 export type customerDataType = {
     id: string
     name: string
-    contact: string
-    email?: string
     address: string
     city?: string
+    contact: string
     type: CustomerType
     status: CustomerStatus
+    email?: string
     balance: number
     creditLimit?: number
     totalOrders?: number

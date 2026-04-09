@@ -19,6 +19,20 @@ export const resetPasswordZodSchema = z.object({
     email: z.string({ error: "Email field required" }).email({ error: "Email should be in valid format" }),
 })
 
+export const addContactZodSchema = z.object({
+    firstName: z.string({ error: "Name field required" }).min(4, { error: "Atleast 4 letters long" }),
+    lastName: z.string({ error: "Name field required" }).min(4, { error: "Atleast 4 letters long" }),
+    address: z.string({ error: "Address field required" }).min(10, { error: "Address should be at least 10 characters long" }),
+    city: z.string().optional(),
+    contact: z.string({ error: "Contact field required" }).min(10, { error: "Contact should be at least 10 digits" }),
+    type: z.enum(["wholesale", "retail", "cash"], { error: "Invalid customer type" }),
+    company: z.string().optional(),
+    GSTIN: z.string().optional(),
+    email: z.string({ error: "Email field required" }).email({ error: "Email should be in valid format" }),
+    creditLimit: z.number().min(0, { error: "Credit limit cannot be negative" }).optional(),
+    assignedTo: z.string().optional(),
+});
+
 export const editCustomerZodSchema = z.object({
     name: z.string({ error: "Name field required" }).min(4, { error: "Atleast 4 letters long" }),
     email: z.string({ error: "Email field required" }).email({ error: "Email should be in valid format" }),

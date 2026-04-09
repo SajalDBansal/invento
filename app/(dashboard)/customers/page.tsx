@@ -40,7 +40,7 @@ export default function CustomersPage() {
                     </div>
                 </div>
                 <div className="flex justify-end space-x-2">
-                    <Link href={"#"}>
+                    <Link href={"/customers/add"}>
                         <Button>
                             <Plus />
                             Create Customer
