@@ -17,7 +17,7 @@ export default function QuickActions() {
         <Dialog >
             <DialogTrigger asChild>
                 <div className="flex justify-center sm:justify-end">
-                    <Button variant="default" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto">
                         Quick Actions
                     </Button>
                 </div>

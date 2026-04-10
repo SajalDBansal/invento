@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, FileText, LoaderCircleIcon, SearchIcon } from "lucide-react"
 import { useEffect, useId, useState } from "react"
-import { InvoiceTable } from "../contacts-ables/invoice-table";
-import { LedgerTable } from "../contacts-ables/ledger-table";
-import { ActivityTable } from "../contacts-ables/activity-table";
-import { ProductsTable } from "../contacts-ables/products-table";
+import { InvoiceTable } from "../contacts-tables/invoice-table";
+import { LedgerTable } from "../contacts-tables/ledger-table";
+import { ActivityTable } from "../contacts-tables/activity-table";
+import { ProductsTable } from "../contacts-tables/products-table";
 
 type TabValue = "invoices" | "ledger" | "activity" | "products";
 

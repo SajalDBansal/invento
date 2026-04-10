@@ -326,3 +326,16 @@ export type ContactsLastInvoiceData = {
         icon: string;
     }[]
 };
+
+export type invoiceDicountTableDataType = {
+    id: string,
+    invoiceId: string,
+    customerName: string,
+    customerId: string
+    type: "percentage" | "flatRate",
+    value: number,
+    percentage: number,
+    invoiceStatus: "pending" | "partiallyPaid" | "paid" | "overdue",
+    date: string,
+    assignedTo?: String
+}
