@@ -150,6 +150,7 @@ export type SuppliersPageKPIKey = "totalSuppliers" | "activeSuppliers" | "totalP
 export type CustomersPageKPIData = Record<CustomersPageKPIKey, { value: string, trend?: number }>
 
 export type suppliersPageKPIData = Record<SuppliersPageKPIKey, { value: string, trend?: number }>
+export type SalesPageKPIData = Record<string, { value: string }>
 
 export type ContactsKpiLayout = {
     key: string,
@@ -327,6 +328,8 @@ export type ContactsLastInvoiceData = {
     }[]
 };
 
+export type InvoiceStatus = "pending" | "partiallyPaid" | "paid" | "overdue";
+
 export type invoiceDicountTableDataType = {
     id: string,
     invoiceId: string,
@@ -335,7 +338,21 @@ export type invoiceDicountTableDataType = {
     type: "percentage" | "flatRate",
     value: number,
     percentage: number,
-    invoiceStatus: "pending" | "partiallyPaid" | "paid" | "overdue",
+    invoiceStatus: InvoiceStatus,
     date: string,
     assignedTo?: String
+}
+
+export type invoicesDataType = {
+    id: string
+    date: string,
+    customerName: string,
+    customerId: string,
+    amount: number,
+    paidAmount: number,
+    outStandingAmount: number,
+    dueDate: string,
+    status: InvoiceStatus,
+    type: CustomerType
+    assignedTo?: string // carpenter
 }

@@ -1,4 +1,4 @@
-import { ActivityMetaType, ContactsKpiLayout, CustomerStatus, CustomerType, DashbordKpiLayout, InventoryAlertProp, NavSection, QuickAction } from "@/types/types";
+import { ActivityMetaType, ContactsKpiLayout, CustomerStatus, CustomerType, DashbordKpiLayout, InventoryAlertProp, InvoiceStatus, NavSection, QuickAction } from "@/types/types";
 
 import {
     BarChart3,
@@ -22,7 +22,14 @@ import {
     Book,
     UserCheck,
     LucideIcon,
-    Ban, Check, Store, X
+    Ban, Check, Store, X,
+    BadgePercent,
+    Tag,
+    Calculator,
+    AlertCircle,
+    Clock,
+    Loader,
+    CheckCircle
 } from "lucide-react";
 
 export const NAVIGATION: NavSection[] = [
@@ -336,6 +343,36 @@ export const customerStatusConfig: Record<
     },
 } as const
 
+export const invoiceStatusConfig: Record<
+    InvoiceStatus,
+    {
+        label: string;
+        icon: LucideIcon;
+        className: string;
+    }
+> = {
+    pending: {
+        label: "Pending",
+        icon: Clock,
+        className: "text-gray-500",
+    },
+    partiallyPaid: {
+        label: "Partially Paid",
+        icon: Loader,
+        className: "text-blue-500",
+    },
+    paid: {
+        label: "Paid",
+        icon: CheckCircle,
+        className: "text-green-500",
+    },
+    overdue: {
+        label: "Overdue",
+        icon: AlertCircle,
+        className: "text-red-500",
+    },
+} as const;
+
 export const customerTypeConfig: Record<
     CustomerType,
     {
@@ -360,3 +397,49 @@ export const customerTypeConfig: Record<
         className: "text-orange-500",
     },
 }
+
+export const KPI_CARDS_DISCOUNT_PAGE: ContactsKpiLayout[] = [
+    {
+        key: "totalDiscountGiven",
+        title: "Total Discount Given",
+        icon: BadgePercent, // Lucide icon
+    },
+    {
+        key: "averageDiscountPercentage",
+        title: "Average Discount %",
+        icon: Percent,
+    },
+    {
+        key: "mostDiscounted",
+        title: "Most Discounted Item",
+        icon: Tag,
+    },
+];
+
+export const KPI_CARDS_SALES_PAGE: ContactsKpiLayout[] = [
+    {
+        key: "totalRevenue",
+        title: "Total Revenue",
+        icon: IndianRupee, // or "dollar-sign" if multi-currency
+    },
+    {
+        key: "totalOrders",
+        title: "Total Orders",
+        icon: ShoppingCart,
+    },
+    {
+        key: "averageOrderValue",
+        title: "Average Order Value",
+        icon: Calculator,
+    },
+    {
+        key: "totalOutstanding",
+        title: "Total Outstanding",
+        icon: Wallet, // represents pending money
+    },
+    {
+        key: "totalOverdue",
+        title: "Total Overdue",
+        icon: AlertCircle, // indicates urgency / overdue state
+    },
+];

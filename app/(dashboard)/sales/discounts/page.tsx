@@ -1,8 +1,23 @@
 import QuickActions from "@/components/modules/dashboard-layout/quick-action-dialog";
 import { DiscountsTable } from "@/components/modules/sales/discounts/dicounts-table";
+import SalesKPISection from "@/components/modules/sales/kpi-section";
 import { Button } from "@/components/ui/button";
+import { KPI_CARDS_DISCOUNT_PAGE } from "@/public/data";
+import { SalesPageKPIData } from "@/types/types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+
+const kpiData: SalesPageKPIData = {
+    totalDiscountGiven: {
+        value: "₹1,25,000",
+    },
+    averageDiscountPercentage: {
+        value: "18%",
+    },
+    mostDiscounted: {
+        value: "Rajest Electronics",
+    },
+};
 
 export default function DiscountPage() {
     return (
@@ -31,7 +46,7 @@ export default function DiscountPage() {
 
             {/* Replacable */}
             <div className='space-y-6'>
-                {/* <CustomersKPISection data={kpiData} /> */}
+                <SalesKPISection data={kpiData} kpiDetails={KPI_CARDS_DISCOUNT_PAGE} />
 
                 <DiscountsTable />
             </div>

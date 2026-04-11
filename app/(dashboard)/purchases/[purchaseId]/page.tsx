@@ -1,7 +1,11 @@
-export default function PurchaseIDPage() {
+export default async function PurchaseIDPage({ params }: { params: Promise<{ purchaseId: string }> }) {
+    const { purchaseId } = await params;
+    console.log(purchaseId);
+
     return (
         <div>
-            Purchase ID
+            Purchase Id Page
         </div>
     )
 }
+
